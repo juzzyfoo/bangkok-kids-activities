@@ -325,16 +325,25 @@
       <button class="modal-close" onclick="closeSetup()">✕</button>
     </div>
     <div class="modal-body">
-      <p class="setup-intro">Tell us about your family so we can suggest the best activities for your kids!</p>
+      <p class="setup-intro">Tell us about your family so we can personalise activity suggestions for your kids!</p>
       <div class="form-group">
         <label class="form-label">Family Name</label>
         <input class="form-input" id="familyNameInput" placeholder="e.g. The Smiths" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input class="form-input" id="parentNameInput" placeholder="e.g. Justin" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Spouse / Partner Name <span style="font-weight:400;color:#aaa">(optional)</span></label>
+        <input class="form-input" id="spouseNameInput" placeholder="e.g. Sarah" />
       </div>
       <div class="form-group">
         <label class="form-label">Kids</label>
         <div class="kids-list" id="kidsList"></div>
         <button class="add-kid-btn" onclick="addKidRow()">+ Add another child</button>
       </div>
+      <div id="setupError" style="color:#dc2626;font-size:0.82rem;margin-top:8px;display:none;"></div>
     </div>
     <div class="modal-footer">
       <button class="save-btn" onclick="saveFamily()">Save & Continue 🎉</button>
@@ -442,9 +451,14 @@ function renderHeader() {
 
   if (family.name) {
     sub.textContent = `Personalised for ${family.name}`;
-    badges.innerHTML = family.kids.map(k =>
-      `<span class="family-badge">${k.age <= 1 ? '👶' : '🧒'} ${k.name} (${k.age} yr${k.age != 1 ? 's' : ''})</span>`
-    ).join('') + '<span class="family-badge">📍 Bangkok & Nearby</span>';
+    const people = [];
+    if (family.parent) people.push(`👤 ${family.parent}`);
+    if (family.spouse) people.push(`👤 ${family.spouse}`);
+    const kidBadges = family.kids.map(k =>
+      `<span class="family-badge">${k.age < 2 ? '👶' : '🧒'} ${k.name} (${k.age} yr${k.age != 1 ? 's' : ''})</span>`
+    ).join('');
+    const peopleBadges = people.map(p => `<span class="family-badge">${p}</span>`).join('');
+    badges.innerHTML = peopleBadges + kidBadges + '<span class="family-badge">📍 Bangkok & Nearby</span>';
   } else {
     sub.textContent = 'Find fun things to do with your kids in Bangkok!';
     badges.innerHTML = '';
@@ -514,9 +528,9 @@ function renderPlanner() {
   [0,1,2,3].forEach(w => {
     const weekActivities = (state.plan[w] || []).map(n => activityMap[n]).filter(Boolean);
     const cardsHtml = weekActivities.length
-      ? weekActivities.map(a => `
+      ? weekActivities.map((a, slot) => `
           <div class="plan-card">
-            <button class="remove-btn" onclick="removeFromPlan(${w},'${a.name.replace(/'/g,"\\'")}')">✕</button>
+            <button class="remove-btn" data-week="${w}" data-slot="${slot}">✕</button>
             <div class="plan-card-top">
               <div class="plan-card-emoji">${a.emoji}</div>
               <div class="plan-card-info">
@@ -540,28 +554,35 @@ function renderPlanner() {
   });
 }
 
-function removeFromPlan(weekIndex, activityName) {
-  state.plan[weekIndex] = state.plan[weekIndex].filter(n => n !== activityName);
+function removeFromPlan(weekIndex, slot) {
+  state.plan[weekIndex].splice(slot, 1);
   saveState();
   renderPlanner();
   renderDashboard();
 }
 
+// Event delegation for remove buttons (avoids string escaping issues)
+document.getElementById('weeksGrid').addEventListener('click', e => {
+  const btn = e.target.closest('[data-week][data-slot]');
+  if (btn) removeFromPlan(parseInt(btn.dataset.week), parseInt(btn.dataset.slot));
+});
+
 // ─────────────────────────────────────────────
 // ACTIVITY PICKER (from planner + button)
 // ─────────────────────────────────────────────
 let pickingForWeek = null;
+let _pickOptions = [];
 
 function openActivityPicker(weekIndex) {
   pickingForWeek = weekIndex;
   const alreadyInWeek = new Set(state.plan[weekIndex] || []);
-  const options = activities.filter(a => !alreadyInWeek.has(a.name));
+  _pickOptions = activities.filter(a => !alreadyInWeek.has(a.name));
 
   const list = document.getElementById('activityPickList');
-  list.innerHTML = options.map(a => {
+  list.innerHTML = _pickOptions.map((a, i) => {
     const suitable = isFamilyFriendly(a);
     return `
-      <div class="modal-item" onclick="addActivityToWeek('${a.name.replace(/'/g,"\\'")}')">
+      <div class="modal-item" data-idx="${i}">
         <div class="modal-item-emoji">${a.emoji}</div>
         <div class="modal-item-info">
           <div class="modal-item-name">${a.name} ${suitable ? '✅' : '⚠️ older kids'}</div>
@@ -571,19 +592,22 @@ function openActivityPicker(weekIndex) {
       </div>`;
   }).join('');
 
-  openModal('activityPickModal');
-}
+  list.onclick = e => {
+    const item = e.target.closest('[data-idx]');
+    if (!item) return;
+    const activity = _pickOptions[parseInt(item.dataset.idx)];
+    if (!activity) return;
+    if (!state.plan[pickingForWeek]) state.plan[pickingForWeek] = [];
+    if (!state.plan[pickingForWeek].includes(activity.name)) {
+      state.plan[pickingForWeek].push(activity.name);
+      saveState();
+      renderPlanner();
+      renderDashboard();
+    }
+    closeModal('activityPickModal');
+  };
 
-function addActivityToWeek(activityName) {
-  if (pickingForWeek === null) return;
-  if (!state.plan[pickingForWeek]) state.plan[pickingForWeek] = [];
-  if (!state.plan[pickingForWeek].includes(activityName)) {
-    state.plan[pickingForWeek].push(activityName);
-    saveState();
-    renderPlanner();
-    renderDashboard();
-  }
-  closeModal('activityPickModal');
+  openModal('activityPickModal');
 }
 
 // ─────────────────────────────────────────────
@@ -670,7 +694,7 @@ function renderList() {
     return;
   }
 
-  filtered.forEach(a => {
+  filtered.forEach((a, i) => {
     const suitable = isFamilyFriendly(a);
     grid.innerHTML += `
       <div class="card">
@@ -691,12 +715,18 @@ function renderList() {
         <div class="card-footer">
           <div class="price-range">${a.priceRange}<span>Approx. entry</span></div>
           <div class="card-btns">
-            <button class="add-to-plan-btn" onclick="openWeekPicker('${a.name.replace(/'/g,"\\'")}')">+ Plan</button>
+            <button class="add-to-plan-btn" data-list-idx="${i}">+ Plan</button>
             <a class="map-btn" href="${a.mapUrl}" target="_blank" rel="noopener">🗺️ Map</a>
           </div>
         </div>
       </div>`;
   });
+
+  // Event delegation — avoids string escaping issues with activity names
+  grid.onclick = e => {
+    const btn = e.target.closest('[data-list-idx]');
+    if (btn) openWeekPicker(filtered[parseInt(btn.dataset.listIdx)].name);
+  };
 }
 
 // ─────────────────────────────────────────────
@@ -704,6 +734,9 @@ function renderList() {
 // ─────────────────────────────────────────────
 function openSetup() {
   document.getElementById('familyNameInput').value = state.family.name || '';
+  document.getElementById('parentNameInput').value = state.family.parent || '';
+  document.getElementById('spouseNameInput').value = state.family.spouse || '';
+  document.getElementById('setupError').style.display = 'none';
   const list = document.getElementById('kidsList');
   list.innerHTML = '';
   (state.family.kids.length ? state.family.kids : [{ name: '', age: '' }]).forEach(k => addKidRow(k));
@@ -711,7 +744,6 @@ function openSetup() {
 }
 
 function closeSetup() {
-  if (!state.family.name && !state.family.kids.length) return; // don't allow close without setup
   closeModal('setupModal');
 }
 
@@ -728,7 +760,15 @@ function addKidRow(kid = { name: '', age: '' }) {
 
 function saveFamily() {
   const name = document.getElementById('familyNameInput').value.trim();
-  if (!name) { alert('Please enter your family name!'); return; }
+  const errEl = document.getElementById('setupError');
+  if (!name) {
+    errEl.textContent = 'Please enter your family name.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  const parent = document.getElementById('parentNameInput').value.trim();
+  const spouse = document.getElementById('spouseNameInput').value.trim();
   const rows = document.querySelectorAll('#kidsList .kid-row');
   const kids = [];
   rows.forEach(row => {
@@ -737,7 +777,7 @@ function saveFamily() {
     const kAge = parseFloat(inputs[1].value);
     if (kName && !isNaN(kAge)) kids.push({ name: kName, age: kAge });
   });
-  state.family = { name, kids };
+  state.family = { name, parent, spouse, kids };
   saveState();
   closeModal('setupModal');
   renderAll();
