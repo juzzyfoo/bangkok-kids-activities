@@ -405,20 +405,27 @@ const activities = [
 const activityMap = Object.fromEntries(activities.map(a => [a.name, a]));
 
 // ─────────────────────────────────────────────
-// STATE (persisted in localStorage)
+// STATE (persisted in localStorage with safe fallback)
 // ─────────────────────────────────────────────
+const _store = (() => {
+  try { localStorage.setItem('_test', '1'); localStorage.removeItem('_test'); return localStorage; }
+  catch { const m = {}; return { getItem: k => m[k] || null, setItem: (k,v) => { m[k]=v; } }; }
+})();
+
 function loadState() {
   try {
     return {
-      family: JSON.parse(localStorage.getItem('bkk_family') || 'null'),
-      plan: JSON.parse(localStorage.getItem('bkk_plan') || 'null')
+      family: JSON.parse(_store.getItem('bkk_family') || 'null'),
+      plan: JSON.parse(_store.getItem('bkk_plan') || 'null')
     };
   } catch { return { family: null, plan: null }; }
 }
 
 function saveState() {
-  localStorage.setItem('bkk_family', JSON.stringify(state.family));
-  localStorage.setItem('bkk_plan', JSON.stringify(state.plan));
+  try {
+    _store.setItem('bkk_family', JSON.stringify(state.family));
+    _store.setItem('bkk_plan', JSON.stringify(state.plan));
+  } catch { /* storage unavailable — state lives in memory only */ }
 }
 
 const loaded = loadState();
