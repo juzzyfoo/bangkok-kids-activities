@@ -3,91 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bangkok Kids Activities</title>
+  <title>Kids Activities Planner</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', sans-serif; background: #f0f7ff; color: #1a1a2e; min-height: 100vh; }
 
     /* ── Header ── */
-    header {
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      color: white;
-      padding: 28px 20px 22px;
-      text-align: center;
-      position: relative;
-    }
+    header { background: linear-gradient(135deg, #6366f1, #06b6d4); color: white; padding: 24px 20px 18px; text-align: center; }
     header h1 { font-size: 2rem; font-weight: 800; }
-    header p { margin-top: 6px; font-size: 0.95rem; opacity: 0.85; }
-    .family-badges { margin-top: 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-    .family-badge {
-      background: rgba(255,255,255,0.2);
-      border: 1.5px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 12px;
-      font-size: 0.82rem; font-weight: 600;
-    }
-    .edit-family-btn {
-      background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.5);
-      color: white; border-radius: 20px; padding: 6px 14px;
-      font-size: 0.8rem; font-weight: 600; cursor: pointer;
-      transition: background 0.2s;
-    }
-    .edit-family-btn:hover { background: rgba(255,255,255,0.35); }
+    header p { margin-top: 4px; font-size: 0.9rem; opacity: 0.85; }
+    .family-badges { margin-top: 10px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .family-badge { background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; font-weight: 600; }
+    .header-btns { margin-top: 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .hbtn { background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.5); color: white; border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .hbtn:hover { background: rgba(255,255,255,0.35); }
+    #authStatus { margin-top: 6px; font-size: 0.72rem; opacity: 0.75; }
+
+    /* ── City Selector ── */
+    .city-bar { background: white; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: center; gap: 0; overflow-x: auto; }
+    .city-btn { padding: 12px 24px; font-size: 0.88rem; font-weight: 700; border: none; background: none; cursor: pointer; color: #94a3b8; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all 0.2s; }
+    .city-btn.active { color: #6366f1; border-bottom-color: #6366f1; }
+    .city-btn:hover:not(.active) { color: #475569; }
+
+    /* ── Month Selector ── */
+    .month-bar { max-width: 1100px; margin: 16px auto 0; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; }
+    .month-nav { display: flex; align-items: center; gap: 12px; }
+    .month-arrow { background: white; border: 2px solid #e2e8f0; border-radius: 8px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .month-arrow:hover { border-color: #6366f1; color: #6366f1; }
+    .month-label { font-size: 1.1rem; font-weight: 800; color: #1a1a2e; min-width: 150px; text-align: center; }
+    .month-today-btn { padding: 7px 14px; background: #eef2ff; color: #6366f1; border: none; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .month-today-btn:hover { background: #e0e7ff; }
 
     /* ── Dashboard ── */
-    .dashboard {
-      max-width: 1100px; margin: 14px auto 0; padding: 0 16px;
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
-    }
+    .dashboard { max-width: 1100px; margin: 12px auto 0; padding: 0 16px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
     @media (max-width: 700px) { .dashboard { grid-template-columns: repeat(3, 1fr); } }
-    .dash-card {
-      background: white; border-radius: 10px;
-      padding: 10px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      display: flex; flex-direction: column; align-items: flex-start;
-    }
+    .dash-card { background: white; border-radius: 10px; padding: 10px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
     .dash-label { font-size: 0.62rem; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
     .dash-value { font-size: 1.1rem; font-weight: 800; color: #6366f1; margin-top: 3px; line-height: 1; }
     .dash-sub { font-size: 0.62rem; color: #aaa; margin-top: 3px; }
 
-    /* ── Tabs ── */
-    .tabs {
-      max-width: 1100px; margin: 28px auto 0; padding: 0 16px;
-      display: flex; gap: 0; border-bottom: 2px solid #e2e8f0;
-    }
-    .tab-btn {
-      padding: 10px 22px; font-size: 0.9rem; font-weight: 700;
-      border: none; background: none; cursor: pointer; color: #94a3b8;
-      border-bottom: 3px solid transparent; margin-bottom: -2px;
-      transition: all 0.2s;
-    }
+    /* ── View Tabs ── */
+    .view-tabs { max-width: 1100px; margin: 20px auto 0; padding: 0 16px; display: flex; border-bottom: 2px solid #e2e8f0; }
+    .tab-btn { padding: 10px 22px; font-size: 0.9rem; font-weight: 700; border: none; background: none; cursor: pointer; color: #94a3b8; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
     .tab-btn.active { color: #6366f1; border-bottom-color: #6366f1; }
     .tab-btn:hover:not(.active) { color: #475569; }
 
-    /* ── Monthly Planner ── */
+    /* ── Plan View ── */
     #planView { max-width: 1100px; margin: 0 auto; padding: 16px 16px 40px; }
-
-    .weeks-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-    }
-
-    .week-col {
-      background: white; border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      overflow: hidden; display: flex; flex-direction: column;
-    }
-    .week-header {
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      color: white; font-size: 0.8rem; font-weight: 700;
-      padding: 10px 14px; letter-spacing: 0.5px;
-    }
+    .weeks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .week-col { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; display: flex; flex-direction: column; }
+    .week-header { background: linear-gradient(135deg, #6366f1, #06b6d4); color: white; font-size: 0.8rem; font-weight: 700; padding: 10px 14px; letter-spacing: 0.5px; }
     .week-activities { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-
-    .plan-card {
-      border: 1.5px solid #e2e8f0; border-radius: 12px;
-      padding: 12px; position: relative;
-      transition: border-color 0.2s;
-    }
+    .plan-card { border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px; position: relative; transition: border-color 0.2s; }
     .plan-card:hover { border-color: #6366f1; }
     .plan-card-top { display: flex; gap: 10px; align-items: flex-start; }
     .plan-card-emoji { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
@@ -95,65 +62,28 @@
     .plan-card-name { font-size: 0.88rem; font-weight: 700; line-height: 1.3; }
     .plan-card-loc { font-size: 0.72rem; color: #888; margin-top: 2px; }
     .plan-card-price { font-size: 0.78rem; font-weight: 600; color: #6366f1; margin-top: 6px; }
-    .remove-btn {
-      position: absolute; top: 8px; right: 8px;
-      background: #fee2e2; border: none; color: #dc2626;
-      width: 22px; height: 22px; border-radius: 50%;
-      font-size: 0.7rem; cursor: pointer; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
-    }
+    .remove-btn { position: absolute; top: 8px; right: 8px; background: #fee2e2; border: none; color: #dc2626; width: 22px; height: 22px; border-radius: 50%; font-size: 0.7rem; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; }
     .remove-btn:hover { background: #fecaca; }
     .plan-card-actions { display: flex; gap: 6px; margin-top: 8px; }
-    .plan-map-btn {
-      padding: 5px 10px; background: #ff6b6b; color: white;
-      border: none; border-radius: 6px; font-size: 0.72rem; font-weight: 600;
-      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
-    }
+    .plan-map-btn { padding: 5px 10px; background: #ff6b6b; color: white; border: none; border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
     .plan-map-btn:hover { background: #e05555; }
-
-    .week-empty {
-      text-align: center; padding: 20px 10px;
-      color: #bbb; font-size: 0.82rem;
-    }
-
-    .add-activity-btn {
-      margin: 0 10px 10px; padding: 9px;
-      border: 2px dashed #c7d2fe; border-radius: 10px;
-      background: none; color: #6366f1;
-      font-size: 0.82rem; font-weight: 600; cursor: pointer;
-      width: calc(100% - 20px); transition: all 0.2s;
-    }
+    .week-empty { text-align: center; padding: 20px 10px; color: #bbb; font-size: 0.82rem; }
+    .add-activity-btn { margin: 0 10px 10px; padding: 9px; border: 2px dashed #c7d2fe; border-radius: 10px; background: none; color: #6366f1; font-size: 0.82rem; font-weight: 600; cursor: pointer; width: calc(100% - 20px); transition: all 0.2s; }
     .add-activity-btn:hover { background: #eef2ff; border-color: #6366f1; }
 
     /* ── All Activities View ── */
     #allView { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
-
     .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 16px 0 0; }
     .search-wrap { flex: 1; min-width: 200px; }
-    .search-wrap input {
-      width: 100%; padding: 10px 16px; border: 2px solid #dde;
-      border-radius: 10px; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
-    }
+    .search-wrap input { width: 100%; padding: 10px 16px; border: 2px solid #dde; border-radius: 10px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
     .search-wrap input:focus { border-color: #6366f1; }
     .filter-group { display: flex; flex-wrap: wrap; gap: 8px; }
-    .filter-btn {
-      padding: 8px 16px; border: 2px solid #dde; border-radius: 20px;
-      background: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    }
+    .filter-btn { padding: 8px 16px; border: 2px solid #dde; border-radius: 20px; background: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .filter-btn:hover { border-color: #6366f1; color: #6366f1; }
     .filter-btn.active { background: #6366f1; border-color: #6366f1; color: white; }
     .results-count { font-size: 0.85rem; color: #666; padding: 10px 0 0; }
-
-    .grid {
-      margin-top: 16px; display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
-    }
-    .card {
-      background: white; border-radius: 16px; overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
-    }
+    .grid { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
     .card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
     .card-header { padding: 20px 20px 0; display: flex; align-items: flex-start; gap: 14px; }
     .card-emoji { font-size: 2.4rem; line-height: 1; flex-shrink: 0; }
@@ -171,65 +101,29 @@
     .budget-mid  { background: #ffedd5; color: #c2410c; }
     .budget-high { background: #fee2e2; color: #dc2626; }
     .card-desc { padding: 10px 20px; font-size: 0.85rem; color: #555; line-height: 1.6; flex: 1; }
-    .card-footer {
-      padding: 12px 20px 16px; display: flex; align-items: center;
-      justify-content: space-between; border-top: 1px solid #f0f0f0; gap: 10px;
-    }
+    .card-footer { padding: 12px 20px 16px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f0f0f0; gap: 10px; }
     .price-range { font-size: 0.85rem; font-weight: 600; color: #333; }
     .price-range span { display: block; font-size: 0.73rem; color: #888; font-weight: 400; }
     .card-btns { display: flex; gap: 8px; }
-    .map-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 7px 12px; background: #ff6b6b; color: white;
-      border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600;
-      transition: background 0.2s; white-space: nowrap; border: none; cursor: pointer;
-    }
+    .map-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 12px; background: #ff6b6b; color: white; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: background 0.2s; white-space: nowrap; border: none; cursor: pointer; }
     .map-btn:hover { background: #e05555; }
-    .add-to-plan-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 7px 12px; background: #6366f1; color: white;
-      border-radius: 8px; font-size: 0.8rem; font-weight: 600;
-      border: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
-    }
+    .add-to-plan-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 12px; background: #6366f1; color: white; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
     .add-to-plan-btn:hover { background: #4f46e5; }
     .no-results { text-align: center; padding: 60px 20px; color: #999; font-size: 1rem; grid-column: 1/-1; }
 
     /* ── Modals ── */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45); z-index: 200;
-      align-items: center; justify-content: center; padding: 20px;
-    }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: white; border-radius: 20px; width: 100%;
-      max-width: 540px; max-height: 85vh; display: flex; flex-direction: column;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    }
-    .modal-header {
-      padding: 20px 24px 16px; border-bottom: 1px solid #f0f0f0;
-      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-    }
+    .modal { background: white; border-radius: 20px; width: 100%; max-width: 540px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .modal-header { padding: 20px 24px 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
     .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #888; }
     .modal-body { overflow-y: auto; padding: 16px; }
     .modal-footer { padding: 16px 24px; border-top: 1px solid #f0f0f0; flex-shrink: 0; }
-
-    /* Pick week modal */
     .week-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .week-pick-btn {
-      padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px;
-      background: white; cursor: pointer; font-size: 0.9rem; font-weight: 600;
-      color: #6366f1; transition: all 0.2s; text-align: center;
-    }
+    .week-pick-btn { padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: #6366f1; transition: all 0.2s; text-align: center; }
     .week-pick-btn:hover { background: #eef2ff; border-color: #6366f1; }
-
-    /* Activity picker modal items */
-    .modal-item {
-      display: flex; align-items: center; gap: 12px; padding: 12px;
-      border-radius: 12px; cursor: pointer; transition: background 0.15s;
-      border: 2px solid transparent;
-    }
+    .modal-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; cursor: pointer; transition: background 0.15s; border: 2px solid transparent; }
     .modal-item:hover { background: #f5f3ff; border-color: #6366f1; }
     .modal-item-emoji { font-size: 1.6rem; flex-shrink: 0; }
     .modal-item-info { flex: 1; }
@@ -237,50 +131,32 @@
     .modal-item-meta { font-size: 0.73rem; color: #888; margin-top: 2px; }
     .modal-item-price { font-size: 0.78rem; font-weight: 600; color: #6366f1; white-space: nowrap; flex-shrink: 0; }
 
-    /* Family Setup Modal */
+    /* ── Family Setup ── */
     .setup-intro { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 20px; }
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: #444; margin-bottom: 6px; }
-    .form-input {
-      width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0;
-      border-radius: 10px; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
-      font-family: inherit;
-    }
+    .form-input { width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; font-family: inherit; }
     .form-input:focus { border-color: #6366f1; }
     .kids-list { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
     .kid-row { display: flex; gap: 8px; align-items: center; }
     .kid-row .form-input { flex: 1; }
     .kid-row .age-input { width: 90px; flex-shrink: 0; }
-    .remove-kid-btn {
-      background: #fee2e2; border: none; color: #dc2626;
-      width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
-      font-size: 1rem; font-weight: 700; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .add-kid-btn {
-      padding: 8px 14px; border: 2px dashed #c7d2fe; border-radius: 10px;
-      background: none; color: #6366f1; font-size: 0.82rem; font-weight: 600;
-      cursor: pointer; margin-top: 4px; transition: all 0.2s;
-    }
+    .remove-kid-btn { background: #fee2e2; border: none; color: #dc2626; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 700; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .add-kid-btn { padding: 8px 14px; border: 2px dashed #c7d2fe; border-radius: 10px; background: none; color: #6366f1; font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-top: 4px; transition: all 0.2s; }
     .add-kid-btn:hover { background: #eef2ff; }
-    .save-btn {
-      width: 100%; padding: 12px; background: #6366f1; color: white;
-      border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700;
-      cursor: pointer; transition: background 0.2s;
-    }
+    .save-btn { width: 100%; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
     .save-btn:hover { background: #4f46e5; }
 
     footer { text-align: center; padding: 20px; font-size: 0.78rem; color: #aaa; }
 
     @media (max-width: 500px) {
       header h1 { font-size: 1.5rem; }
-      .edit-family-btn { position: static; margin-top: 10px; }
       .weeks-grid { grid-template-columns: 1fr; }
       .grid { grid-template-columns: 1fr; }
       .week-pick-grid { grid-template-columns: 1fr; }
+      .month-bar { flex-direction: column; gap: 10px; align-items: stretch; }
     }
   </style>
-  <!-- Firebase CDN -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -288,22 +164,34 @@
 <body>
 
 <header>
-  <h1>🎉 Bangkok Kids Activities</h1>
-  <p id="headerSub">Find fun things to do with your kids!</p>
+  <h1>🎉 Kids Activities Planner</h1>
+  <p id="headerSub">Find fun things to do with your family!</p>
   <div class="family-badges" id="familyBadges"></div>
-  <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
-    <button class="edit-family-btn" onclick="openSetup()">✏️ Edit Family</button>
-    <button class="edit-family-btn" id="loginBtn" onclick="signIn()" style="display:none;">🔑 Sign In to Sync</button>
-    <button class="edit-family-btn" id="logoutBtn" onclick="signOut()" style="display:none;">👋 Sign Out</button>
+  <div class="header-btns">
+    <button class="hbtn" onclick="openSetup()">✏️ Edit Family</button>
+    <button class="hbtn" id="loginBtn" onclick="signIn()" style="display:none;">🔑 Sign In to Sync</button>
+    <button class="hbtn" id="logoutBtn" onclick="signOut()" style="display:none;">👋 Sign Out</button>
   </div>
-  <div id="authStatus" style="margin-top:6px;font-size:0.75rem;opacity:0.75;"></div>
+  <div id="authStatus"></div>
 </header>
 
-<!-- Dashboard -->
+<!-- City Selector -->
+<div class="city-bar" id="cityBar"></div>
+
+<!-- Month Selector + Dashboard -->
+<div class="month-bar">
+  <div class="month-nav">
+    <button class="month-arrow" onclick="changeMonth(-1)">←</button>
+    <div class="month-label" id="monthLabel"></div>
+    <button class="month-arrow" onclick="changeMonth(1)">→</button>
+  </div>
+  <button class="month-today-btn" onclick="goToToday()">Today's Month</button>
+</div>
+
 <div class="dashboard" id="dashboard"></div>
 
-<!-- Tabs -->
-<div class="tabs">
+<!-- View Tabs -->
+<div class="view-tabs">
   <button class="tab-btn active" id="tabPlan" onclick="switchTab('plan')">📅 This Month's Plan</button>
   <button class="tab-btn" id="tabAll" onclick="switchTab('all')">🗺️ All Activities</button>
 </div>
@@ -316,9 +204,7 @@
 <!-- All Activities View -->
 <div id="allView" style="display:none;">
   <div class="controls">
-    <div class="search-wrap">
-      <input type="text" id="searchInput" placeholder="🔍 Search activities..." oninput="renderList()" />
-    </div>
+    <div class="search-wrap"><input type="text" id="searchInput" placeholder="🔍 Search activities..." oninput="renderList()" /></div>
     <div class="filter-group" id="categoryFilters"></div>
     <div class="filter-group" id="budgetFilters"></div>
   </div>
@@ -331,10 +217,10 @@
   <div class="modal">
     <div class="modal-header">
       <h3>👨‍👩‍👧‍👦 Set Up Your Family</h3>
-      <button class="modal-close" onclick="closeSetup()">✕</button>
+      <button class="modal-close" onclick="closeModal('setupModal')">✕</button>
     </div>
     <div class="modal-body">
-      <p class="setup-intro">Tell us about your family so we can personalise activity suggestions for your kids!</p>
+      <p class="setup-intro">Tell us about your family so we can personalise activity suggestions!</p>
       <div class="form-group">
         <label class="form-label">Family Name</label>
         <input class="form-input" id="familyNameInput" placeholder="e.g. The Smiths" />
@@ -344,7 +230,7 @@
         <input class="form-input" id="parentNameInput" placeholder="e.g. Justin" />
       </div>
       <div class="form-group">
-        <label class="form-label">Spouse / Partner Name <span style="font-weight:400;color:#aaa">(optional)</span></label>
+        <label class="form-label">Spouse / Partner <span style="font-weight:400;color:#aaa">(optional)</span></label>
         <input class="form-input" id="spouseNameInput" placeholder="e.g. Sarah" />
       </div>
       <div class="form-group">
@@ -360,7 +246,7 @@
   </div>
 </div>
 
-<!-- Pick Week Modal (from All Activities "Add to Plan") -->
+<!-- Week Picker Modal -->
 <div class="modal-overlay" id="weekPickModal">
   <div class="modal">
     <div class="modal-header">
@@ -373,7 +259,7 @@
   </div>
 </div>
 
-<!-- Activity Picker Modal (Add to week from planner) -->
+<!-- Activity Picker Modal -->
 <div class="modal-overlay" id="activityPickModal">
   <div class="modal">
     <div class="modal-header">
@@ -387,9 +273,7 @@
 <footer>Prices are approximate. Always check official websites for the latest info. 🌏</footer>
 
 <script>
-// ─────────────────────────────────────────────
-// FIREBASE
-// ─────────────────────────────────────────────
+// ── FIREBASE ──────────────────────────────────
 firebase.initializeApp({
   apiKey: "AIzaSyA5dYU6D2eZBFoQG9-4NHfSKWXwsI05LNo",
   authDomain: "bangkok-kids-activities.firebaseapp.com",
@@ -399,215 +283,232 @@ firebase.initializeApp({
   appId: "1:757324517545:web:243a2d44c8fd5ba0d459b8"
 });
 const auth = firebase.auth();
-const db = firebase.firestore();
+const db   = firebase.firestore();
 
-function signIn() {
-  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-}
-function signOut() {
-  auth.signOut();
-}
+function signIn()  { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+function signOut() { auth.signOut(); }
 
 async function saveToFirestore() {
   const user = auth.currentUser;
   if (!user) return;
-  await db.collection('users').doc(user.uid).set({
-    family: state.family,
-    plan: state.plan
-  });
+  await db.collection('users').doc(user.uid).set({ family: state.family, plans: state.plans });
 }
 
 auth.onAuthStateChanged(async user => {
-  const loginBtn  = document.getElementById('loginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const authStatus = document.getElementById('authStatus');
+  document.getElementById('loginBtn').style.display  = user ? 'none' : 'inline-block';
+  document.getElementById('logoutBtn').style.display = user ? 'inline-block' : 'none';
+  document.getElementById('authStatus').textContent  = user ? `Signed in as ${user.email}` : 'Sign in to sync across devices';
 
   if (user) {
-    loginBtn.style.display  = 'none';
-    logoutBtn.style.display = 'inline-block';
-    authStatus.textContent  = `Signed in as ${user.email}`;
-
-    // Load data from Firestore
     const doc = await db.collection('users').doc(user.uid).get();
     if (doc.exists) {
-      const data = doc.data();
-      if (data.family) state.family = data.family;
-      if (data.plan)   state.plan   = data.plan;
+      const d = doc.data();
+      if (d.family) state.family = d.family;
+      if (d.plans)  state.plans  = d.plans;
     }
   } else {
-    loginBtn.style.display  = 'inline-block';
-    logoutBtn.style.display = 'none';
-    authStatus.textContent  = 'Sign in to sync across devices';
-
-    // Fall back to localStorage
-    const saved = loadState();
+    const saved = loadLocal();
     if (saved.family) state.family = saved.family;
-    if (saved.plan)   state.plan   = saved.plan;
+    if (saved.plans)  state.plans  = saved.plans;
   }
-
   renderAll();
   if (!state.family.name) setTimeout(() => openSetup(), 300);
 });
 
-// ─────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────
-const activities = [
-  { name:"KidZania Bangkok", emoji:"🏙️", location:"Siam Paragon, Bangkok", category:"Indoor", ageRange:"3–14 yrs", minAge:3, budget:"high", priceRange:"฿800–฿1,000 / child", budgetMin:1600, budgetMax:2000, description:"A mini city where kids role-play as doctors, pilots, and firefighters. Highly interactive and educational.", mapUrl:"https://maps.google.com/?q=KidZania+Bangkok+Siam+Paragon" },
-  { name:"SEA LIFE Bangkok Ocean World", emoji:"🦈", location:"Siam Paragon, Bangkok", category:"Indoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿490–฿690 / adult, ฿390 / child", budgetMin:1370, budgetMax:1770, description:"Largest aquarium in Southeast Asia with 30,000+ marine creatures, a shark walk, and glass-bottom boat rides.", mapUrl:"https://maps.google.com/?q=SEA+LIFE+Bangkok+Ocean+World" },
-  { name:"Safari World Bangkok", emoji:"🦁", location:"Min Buri, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿500–฿900 / person", budgetMin:1000, budgetMax:1800, description:"Drive through enclosures with lions, giraffes, and zebras. Marine park dolphin and bird shows for all ages.", mapUrl:"https://maps.google.com/?q=Safari+World+Bangkok" },
-  { name:"Dream World", emoji:"🎢", location:"Pathum Thani, near Bangkok", category:"Outdoor", ageRange:"4+ yrs", minAge:4, budget:"mid", priceRange:"฿350–฿500 / person", budgetMin:700, budgetMax:1000, description:"Theme park with roller coasters, a snow town, fantasy land, and adventure land. Great for a full-day trip.", mapUrl:"https://maps.google.com/?q=Dream+World+Thailand" },
-  { name:"Siam Park City", emoji:"🌊", location:"Khan Na Yao, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿400–฿650 / person", budgetMin:800, budgetMax:1300, description:"One of Asia's largest water parks with wave pools, lazy rivers, and a toddler splash zone.", mapUrl:"https://maps.google.com/?q=Siam+Park+City+Bangkok" },
-  { name:"Children's Discovery Museum", emoji:"🔬", location:"Chatuchak, Bangkok", category:"Indoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Hands-on science and discovery exhibits designed for young children. Free and educational — a hidden gem.", mapUrl:"https://maps.google.com/?q=Children%27s+Discovery+Museum+Bangkok" },
-  { name:"Art in Paradise Bangkok", emoji:"🎨", location:"Ratchadaphisek, Bangkok", category:"Indoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿200–฿400 / person", budgetMin:400, budgetMax:800, description:"3D illusion art museum where you become part of the art! Perfect for creative family photos and fun.", mapUrl:"https://maps.google.com/?q=Art+in+Paradise+Bangkok" },
-  { name:"Bounce Thailand", emoji:"🏃", location:"Ekkamai, Bangkok", category:"Indoor", ageRange:"3+ yrs", minAge:3, budget:"low", priceRange:"฿250–฿450 / hour", budgetMin:500, budgetMax:900, description:"Massive indoor trampoline park with foam pits, dodgeball courts, slam dunk zones, and ninja courses.", mapUrl:"https://maps.google.com/?q=Bounce+Bangkok+Ekkamai" },
-  { name:"Bangkok Butterfly Garden", emoji:"🦋", location:"Chatuchak Park, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Walk among hundreds of free-flying butterflies. Kids are captivated by the colours and gentle creatures.", mapUrl:"https://maps.google.com/?q=Bangkok+Butterfly+Garden+Insectarium" },
-  { name:"Muang Boran (Ancient City)", emoji:"🏛️", location:"Samut Prakan, near Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿300–฿500 / person", budgetMin:600, budgetMax:1000, description:"The world's largest outdoor museum. Spacious, stroller-friendly grounds with miniature Thai monuments.", mapUrl:"https://maps.google.com/?q=Muang+Boran+Ancient+City+Samut+Prakan" },
-  { name:"Dusit Zoo", emoji:"🐘", location:"Dusit, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿100–฿150 / person", budgetMin:200, budgetMax:300, description:"Classic Bangkok zoo. Shaded paths, stroller-friendly, with elephants, hippos, and a children's area.", mapUrl:"https://maps.google.com/?q=Dusit+Zoo+Bangkok" },
-  { name:"Central World Ice Skating", emoji:"⛸️", location:"Ratchaprasong, Bangkok", category:"Indoor", ageRange:"4+ yrs", minAge:4, budget:"low", priceRange:"฿200–฿350 / session", budgetMin:400, budgetMax:700, description:"Air-conditioned indoor ice rink in the heart of Bangkok. Includes skate rental — a great cool-down activity.", mapUrl:"https://maps.google.com/?q=ZEN+Ice+Skating+CentralWorld+Bangkok" },
-  { name:"Kidzooona (ICONSIAM)", emoji:"🎠", location:"ICONSIAM, Bangkok", category:"Indoor", ageRange:"1–10 yrs", minAge:1, budget:"low", priceRange:"฿150–฿350 / session", budgetMin:300, budgetMax:700, description:"Indoor play zone with soft play, rides, and activities. Designed for ages 1–10 — ideal for toddlers and babies.", mapUrl:"https://maps.google.com/?q=Kidzooona+ICONSIAM+Bangkok" },
-  { name:"Airplane Graveyard", emoji:"✈️", location:"Ramkhamhaeng, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free (small tip welcomed)", budgetMin:0, budgetMax:100, description:"Explore old decommissioned planes in a quirky outdoor setting. A unique and memorable family outing.", mapUrl:"https://maps.google.com/?q=Bangkok+Airplane+Graveyard+Ramkhamhaeng" },
-  { name:"Chatuchak Weekend Market", emoji:"🛍️", location:"Chatuchak, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry (spend as you go)", budgetMin:0, budgetMax:500, description:"Massive weekend market with a kids section, animals, and great street food. A classic Bangkok family Saturday.", mapUrl:"https://maps.google.com/?q=Chatuchak+Weekend+Market+Bangkok" },
-  { name:"Samphran Elephant Ground", emoji:"🐊", location:"Nakhon Pathom, near Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿200–฿450 / person", budgetMin:400, budgetMax:900, description:"Elephant shows, crocodile wrestling, and wildlife close up. About 40 mins from Bangkok — worth the drive!", mapUrl:"https://maps.google.com/?q=Samphran+Elephant+Ground+Zoo" },
-  { name:"Labyrinth at Siam Discovery", emoji:"🧩", location:"Siam Discovery, Bangkok", category:"Indoor", ageRange:"5+ yrs", minAge:5, budget:"mid", priceRange:"฿450–฿550 / person", budgetMin:900, budgetMax:1100, description:"Immersive puzzle rooms and escape experiences. Creative and teamwork-oriented — better for older kids.", mapUrl:"https://maps.google.com/?q=Siam+Discovery+Bangkok" },
-  { name:"Avani+ Riverside Pool Day", emoji:"🏊", location:"Thon Buri, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"high", priceRange:"฿800–฿1,200 / person (day pass)", budgetMin:1600, budgetMax:2400, description:"Rooftop infinity pool with stunning Chao Phraya River views. A splurge treat for the whole family.", mapUrl:"https://maps.google.com/?q=Avani+Riverside+Bangkok+Hotel" }
-];
-
-const activityMap = Object.fromEntries(activities.map(a => [a.name, a]));
-
-// ─────────────────────────────────────────────
-// STATE (persisted in localStorage with safe fallback)
-// ─────────────────────────────────────────────
+// ── LOCAL STORAGE ─────────────────────────────
 const _store = (() => {
-  try { localStorage.setItem('_test', '1'); localStorage.removeItem('_test'); return localStorage; }
-  catch { const m = {}; return { getItem: k => m[k] || null, setItem: (k,v) => { m[k]=v; } }; }
+  try { localStorage.setItem('_t','1'); localStorage.removeItem('_t'); return localStorage; }
+  catch { const m={}; return { getItem: k=>m[k]||null, setItem:(k,v)=>{m[k]=v;} }; }
 })();
 
-function loadState() {
-  try {
-    return {
-      family: JSON.parse(_store.getItem('bkk_family') || 'null'),
-      plan: JSON.parse(_store.getItem('bkk_plan') || 'null')
-    };
-  } catch { return { family: null, plan: null }; }
+function loadLocal() {
+  try { return { family: JSON.parse(_store.getItem('bkk_family')||'null'), plans: JSON.parse(_store.getItem('bkk_plans')||'null') }; }
+  catch { return {}; }
 }
-
-function saveState() {
-  try {
-    _store.setItem('bkk_family', JSON.stringify(state.family));
-    _store.setItem('bkk_plan', JSON.stringify(state.plan));
-  } catch { /* storage unavailable */ }
-  saveToFirestore(); // also sync to Firestore if logged in
+function saveLocal() {
+  try { _store.setItem('bkk_family', JSON.stringify(state.family)); _store.setItem('bkk_plans', JSON.stringify(state.plans)); }
+  catch {}
 }
+function saveState() { saveLocal(); saveToFirestore(); }
 
-const loaded = loadState();
-const state = {
-  family: loaded.family || { name: '', kids: [] },
-  plan: loaded.plan || { 0: [], 1: [], 2: [], 3: [] },
-  currentTab: 'plan',
-  pendingActivityForWeek: null, // activity name waiting for week selection
+// ── CITIES & ACTIVITIES ───────────────────────
+const CITIES = {
+  'Bangkok': {
+    flag: '🇹🇭', currency: '฿',
+    activities: [
+      { name:"KidZania Bangkok", emoji:"🏙️", location:"Siam Paragon", category:"Indoor", ageRange:"3–14 yrs", minAge:3, budget:"high", priceRange:"฿800–฿1,000 / child", budgetMin:1600, budgetMax:2000, description:"A mini city where kids role-play as doctors, pilots, and firefighters. Highly interactive and educational.", mapUrl:"https://maps.google.com/?q=KidZania+Bangkok+Siam+Paragon" },
+      { name:"SEA LIFE Bangkok Ocean World", emoji:"🦈", location:"Siam Paragon", category:"Indoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿490–฿690 / adult, ฿390 / child", budgetMin:1370, budgetMax:1770, description:"Largest aquarium in Southeast Asia with 30,000+ marine creatures, a shark walk, and glass-bottom boat rides.", mapUrl:"https://maps.google.com/?q=SEA+LIFE+Bangkok+Ocean+World" },
+      { name:"Safari World Bangkok", emoji:"🦁", location:"Min Buri, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿500–฿900 / person", budgetMin:1000, budgetMax:1800, description:"Drive through enclosures with lions, giraffes, and zebras. Marine park shows for all ages.", mapUrl:"https://maps.google.com/?q=Safari+World+Bangkok" },
+      { name:"Dream World", emoji:"🎢", location:"Pathum Thani", category:"Outdoor", ageRange:"4+ yrs", minAge:4, budget:"mid", priceRange:"฿350–฿500 / person", budgetMin:700, budgetMax:1000, description:"Theme park with roller coasters, a snow town, and fantasy land. Great for your 4-year-old!", mapUrl:"https://maps.google.com/?q=Dream+World+Thailand" },
+      { name:"Siam Park City", emoji:"🌊", location:"Khan Na Yao, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿400–฿650 / person", budgetMin:800, budgetMax:1300, description:"One of Asia's largest water parks with wave pools, lazy rivers, and a toddler splash zone.", mapUrl:"https://maps.google.com/?q=Siam+Park+City+Bangkok" },
+      { name:"Children's Discovery Museum", emoji:"🔬", location:"Chatuchak, Bangkok", category:"Indoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Hands-on science and discovery exhibits. Free and very kid-friendly — a hidden gem.", mapUrl:"https://maps.google.com/?q=Children%27s+Discovery+Museum+Bangkok" },
+      { name:"Art in Paradise Bangkok", emoji:"🎨", location:"Ratchadaphisek", category:"Indoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿200–฿400 / person", budgetMin:400, budgetMax:800, description:"3D illusion art museum where you become part of the art! Perfect for creative family photos.", mapUrl:"https://maps.google.com/?q=Art+in+Paradise+Bangkok" },
+      { name:"Bounce Thailand", emoji:"🏃", location:"Ekkamai, Bangkok", category:"Indoor", ageRange:"3+ yrs", minAge:3, budget:"low", priceRange:"฿250–฿450 / hour", budgetMin:500, budgetMax:900, description:"Massive indoor trampoline park with foam pits, dodgeball courts, and ninja courses.", mapUrl:"https://maps.google.com/?q=Bounce+Bangkok+Ekkamai" },
+      { name:"Bangkok Butterfly Garden", emoji:"🦋", location:"Chatuchak Park", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Walk among hundreds of free-flying butterflies. Babies and toddlers are captivated by the colours.", mapUrl:"https://maps.google.com/?q=Bangkok+Butterfly+Garden+Insectarium" },
+      { name:"Muang Boran (Ancient City)", emoji:"🏛️", location:"Samut Prakan", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿300–฿500 / person", budgetMin:600, budgetMax:1000, description:"The world's largest outdoor museum. Spacious, stroller-friendly grounds with miniature Thai monuments.", mapUrl:"https://maps.google.com/?q=Muang+Boran+Ancient+City+Samut+Prakan" },
+      { name:"Dusit Zoo", emoji:"🐘", location:"Dusit, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿100–฿150 / person", budgetMin:200, budgetMax:300, description:"Classic Bangkok zoo. Shaded paths, stroller-friendly, with elephants, hippos, and a children's area.", mapUrl:"https://maps.google.com/?q=Dusit+Zoo+Bangkok" },
+      { name:"Central World Ice Skating", emoji:"⛸️", location:"Ratchaprasong", category:"Indoor", ageRange:"4+ yrs", minAge:4, budget:"low", priceRange:"฿200–฿350 / session", budgetMin:400, budgetMax:700, description:"Air-conditioned indoor ice rink. Includes skate rental — a great cool-down activity.", mapUrl:"https://maps.google.com/?q=ZEN+Ice+Skating+CentralWorld+Bangkok" },
+      { name:"Kidzooona (ICONSIAM)", emoji:"🎠", location:"ICONSIAM, Bangkok", category:"Indoor", ageRange:"1–10 yrs", minAge:1, budget:"low", priceRange:"฿150–฿350 / session", budgetMin:300, budgetMax:700, description:"Indoor play zone designed for ages 1–10. Soft play, slides, and rides — ideal for both kids!", mapUrl:"https://maps.google.com/?q=Kidzooona+ICONSIAM+Bangkok" },
+      { name:"Airplane Graveyard", emoji:"✈️", location:"Ramkhamhaeng", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free (small tip welcomed)", budgetMin:0, budgetMax:100, description:"Explore old decommissioned planes in a quirky outdoor setting. Unique and memorable.", mapUrl:"https://maps.google.com/?q=Bangkok+Airplane+Graveyard+Ramkhamhaeng" },
+      { name:"Chatuchak Weekend Market", emoji:"🛍️", location:"Chatuchak, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry (spend as you go)", budgetMin:0, budgetMax:500, description:"Massive weekend market with a kids section, animals, and great street food.", mapUrl:"https://maps.google.com/?q=Chatuchak+Weekend+Market+Bangkok" },
+      { name:"Samphran Elephant Ground", emoji:"🐊", location:"Nakhon Pathom", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿200–฿450 / person", budgetMin:400, budgetMax:900, description:"Elephant shows, crocodile wrestling, and wildlife close up. ~40 mins from Bangkok.", mapUrl:"https://maps.google.com/?q=Samphran+Elephant+Ground+Zoo" },
+      { name:"Avani+ Riverside Pool Day", emoji:"🏊", location:"Thon Buri, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"high", priceRange:"฿800–฿1,200 / person (day pass)", budgetMin:1600, budgetMax:2400, description:"Rooftop infinity pool with stunning Chao Phraya River views. A splurge treat!", mapUrl:"https://maps.google.com/?q=Avani+Riverside+Bangkok+Hotel" }
+    ]
+  },
+  'Kuala Lumpur': {
+    flag: '🇲🇾', currency: 'RM',
+    activities: [
+      { name:"Aquaria KLCC", emoji:"🦈", location:"KLCC, KL", category:"Indoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"RM50–RM75 / person", budgetMin:100, budgetMax:150, description:"An impressive walk-through aquarium beneath the Petronas Towers. Sharks, rays, and an ocean tunnel.", mapUrl:"https://maps.google.com/?q=Aquaria+KLCC+Kuala+Lumpur" },
+      { name:"KidZania Kuala Lumpur", emoji:"🏙️", location:"Curve NX, KL", category:"Indoor", ageRange:"3–16 yrs", minAge:3, budget:"high", priceRange:"RM80–RM100 / child", budgetMin:160, budgetMax:200, description:"Kids role-play as pilots, doctors, and chefs in a realistic mini city. Very popular with families.", mapUrl:"https://maps.google.com/?q=KidZania+Kuala+Lumpur" },
+      { name:"KL Bird Park", emoji:"🦜", location:"Lake Gardens, KL", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"RM67 / adult, RM43 / child", budgetMin:130, budgetMax:177, description:"World's largest free-flight walk-in aviary. Over 3,000 birds in a lush rainforest setting.", mapUrl:"https://maps.google.com/?q=KL+Bird+Park+Kuala+Lumpur" },
+      { name:"Batu Caves", emoji:"🪨", location:"Gombak, KL", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Iconic Hindu temple caves with a giant golden statue and 272 colourful steps. Monkeys everywhere!", mapUrl:"https://maps.google.com/?q=Batu+Caves+Kuala+Lumpur" },
+      { name:"Sunway Lagoon", emoji:"🌊", location:"Subang Jaya, KL", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"high", priceRange:"RM100–RM180 / person", budgetMin:200, budgetMax:360, description:"Massive theme park with water park, wildlife park, and scream park. A full day of fun for the whole family.", mapUrl:"https://maps.google.com/?q=Sunway+Lagoon+Kuala+Lumpur" },
+      { name:"Petrosains (KLCC)", emoji:"🔬", location:"KLCC, KL", category:"Indoor", ageRange:"3+ yrs", minAge:3, budget:"mid", priceRange:"RM30–RM45 / person", budgetMin:60, budgetMax:90, description:"Interactive science discovery centre inside KLCC. Kids explore oil, science, and technology hands-on.", mapUrl:"https://maps.google.com/?q=Petrosains+KLCC+Kuala+Lumpur" },
+      { name:"KL Butterfly Park", emoji:"🦋", location:"Lake Gardens, KL", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"RM25 / adult, RM15 / child", budgetMin:40, budgetMax:65, description:"Hundreds of free-flying butterflies in a lush garden. Peaceful and magical for young children.", mapUrl:"https://maps.google.com/?q=KL+Butterfly+Park+Kuala+Lumpur" },
+      { name:"KL Tower Mini Zoo", emoji:"🐾", location:"Bukit Nanas, KL", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"RM25–RM38 / person", budgetMin:50, budgetMax:76, description:"Small but charming zoo at the base of KL Tower with reptiles, rabbits, and exotic birds.", mapUrl:"https://maps.google.com/?q=KL+Tower+Mini+Zoo+Kuala+Lumpur" },
+      { name:"LEGOLAND Malaysia", emoji:"🧱", location:"Johor Bahru (day trip)", category:"Outdoor", ageRange:"2+ yrs", minAge:2, budget:"high", priceRange:"RM150–RM200 / person", budgetMin:300, budgetMax:400, description:"Full LEGO theme park with rides, water park, and LEGO constructions. Worth the 4-hour drive!", mapUrl:"https://maps.google.com/?q=LEGOLAND+Malaysia+Johor+Bahru" },
+      { name:"Forest Research Institute (FRIM)", emoji:"🌳", location:"Kepong, KL", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Beautiful rainforest reserve with canopy walkway and nature trails. Cool and refreshing escape from the city.", mapUrl:"https://maps.google.com/?q=FRIM+Forest+Research+Institute+Malaysia" },
+      { name:"Kidzooona Mid Valley", emoji:"🎠", location:"Mid Valley, KL", category:"Indoor", ageRange:"1–10 yrs", minAge:1, budget:"low", priceRange:"RM20–RM50 / session", budgetMin:40, budgetMax:100, description:"Indoor play zone with soft play and rides. Great for toddlers and young kids on a rainy day.", mapUrl:"https://maps.google.com/?q=Kidzooona+Mid+Valley+Kuala+Lumpur" },
+      { name:"i-City Shah Alam", emoji:"🌈", location:"Shah Alam, KL", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"RM30–RM60 / person", budgetMin:60, budgetMax:120, description:"LED wonderland with theme park rides, snow walk, and water park. Magical at night!", mapUrl:"https://maps.google.com/?q=i-City+Shah+Alam" }
+    ]
+  },
+  'Cebu': {
+    flag: '🇵🇭', currency: '₱',
+    activities: [
+      { name:"Cebu Ocean Park", emoji:"🐠", location:"Cebu City", category:"Indoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"₱500–₱800 / person", budgetMin:1000, budgetMax:1600, description:"Cebu's premier aquarium with a fish feeding experience, shark encounter, and mermaid shows.", mapUrl:"https://maps.google.com/?q=Cebu+Ocean+Park" },
+      { name:"Cebu Safari and Adventure Park", emoji:"🦁", location:"Carmen, Cebu", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"high", priceRange:"₱1,000–₱1,500 / person", budgetMin:2000, budgetMax:3000, description:"One of the largest wildlife parks in the Philippines. See giraffes, zebras, and rare animals up close.", mapUrl:"https://maps.google.com/?q=Cebu+Safari+Adventure+Park" },
+      { name:"Tops Lookout", emoji:"🌄", location:"Busay, Cebu City", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"₱100 / person", budgetMin:200, budgetMax:200, description:"Stunning hilltop viewpoint overlooking Cebu City and the sea. Great for sunset with the kids.", mapUrl:"https://maps.google.com/?q=Tops+Lookout+Cebu" },
+      { name:"Mactan Island Beach Day", emoji:"🏖️", location:"Mactan, Cebu", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"high", priceRange:"₱500–₱2,000 / person (resort)", budgetMin:1000, budgetMax:4000, description:"Beautiful white sand beaches with crystal clear water. Many resorts offer day pass access for families.", mapUrl:"https://maps.google.com/?q=Mactan+Island+Cebu" },
+      { name:"Temple of Leah", emoji:"🏛️", location:"Busay, Cebu City", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"₱50 / person", budgetMin:100, budgetMax:100, description:"A stunning hilltop Roman-inspired temple. Kids love exploring the grand architecture and courtyards.", mapUrl:"https://maps.google.com/?q=Temple+of+Leah+Cebu" },
+      { name:"Magellan's Cross", emoji:"✝️", location:"Cebu City", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Historic landmark at the heart of Cebu City. A quick and interesting cultural stop for the family.", mapUrl:"https://maps.google.com/?q=Magellan%27s+Cross+Cebu" },
+      { name:"SM Seaside City Cebu", emoji:"🛍️", location:"South Road Properties", category:"Indoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry (spend as you go)", budgetMin:0, budgetMax:500, description:"Massive mall with kids play areas, food court, and great sea views. Perfect for a rainy day.", mapUrl:"https://maps.google.com/?q=SM+Seaside+City+Cebu" },
+      { name:"Kawasan Falls", emoji:"💧", location:"Badian, Cebu", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"₱500–₱800 / person", budgetMin:1000, budgetMax:1600, description:"Stunning turquoise waterfalls in the jungle. A short trek through bamboo forests — magical for kids.", mapUrl:"https://maps.google.com/?q=Kawasan+Falls+Cebu" },
+      { name:"Cebu Children's Museum", emoji:"🎭", location:"Cebu City", category:"Indoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"₱100–₱150 / person", budgetMin:200, budgetMax:300, description:"Hands-on interactive exhibits designed for young learners. Art, science, and culture all in one place.", mapUrl:"https://maps.google.com/?q=Cebu+Children%27s+Museum" },
+      { name:"Casa Gorordo Museum", emoji:"🏠", location:"Cebu City", category:"Indoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"₱80 / person", budgetMin:160, budgetMax:160, description:"Beautiful restored 19th-century heritage house. Kids enjoy seeing how Cebuanos lived in the old days.", mapUrl:"https://maps.google.com/?q=Casa+Gorordo+Museum+Cebu" },
+      { name:"Oslob Whale Shark Watching", emoji:"🦈", location:"Oslob, Cebu", category:"Outdoor", ageRange:"5+ yrs", minAge:5, budget:"high", priceRange:"₱1,000–₱1,500 / person", budgetMin:2000, budgetMax:3000, description:"Swim alongside the world's biggest fish in Cebu's most famous experience. An unforgettable family adventure.", mapUrl:"https://maps.google.com/?q=Oslob+Whale+Shark+Watching+Cebu" },
+      { name:"Sky Experience Adventure", emoji:"🎢", location:"Crown Regency, Cebu City", category:"Outdoor", ageRange:"7+ yrs", minAge:7, budget:"high", priceRange:"₱300–₱500 / person", budgetMin:600, budgetMax:1000, description:"Edge coaster and sky walk atop a skyscraper. Best for older kids — breathtaking city views!", mapUrl:"https://maps.google.com/?q=Sky+Experience+Adventure+Cebu" }
+    ]
+  }
 };
 
-// ─────────────────────────────────────────────
-// FAMILY HELPERS
-// ─────────────────────────────────────────────
+const CITY_NAMES = Object.keys(CITIES);
+
+// ── STATE ──────────────────────────────────────
+const _now = new Date();
+const _initMonth = `${_now.getFullYear()}-${String(_now.getMonth()+1).padStart(2,'0')}`;
+
+const state = {
+  family: { name:'', parent:'', spouse:'', kids:[] },
+  selectedCity: 'Bangkok',
+  selectedMonth: _initMonth,
+  plans: {}
+};
+
+function planKey() { return `${state.selectedCity}__${state.selectedMonth}`; }
+function currentPlan() { return state.plans[planKey()] || {0:[],1:[],2:[],3:[]}; }
+function setPlan(p) { state.plans[planKey()] = p; }
+function getWeek(w) { return currentPlan()[w] || []; }
+function setWeek(w, arr) { const p = currentPlan(); p[w] = arr; setPlan(p); }
+
+function cityActivities() { return CITIES[state.selectedCity].activities; }
+function activityByName(name) { return cityActivities().find(a => a.name === name); }
+
 function minFamilyAge() {
   if (!state.family.kids.length) return 99;
-  return Math.min(...state.family.kids.map(k => parseFloat(k.age) || 0));
+  return Math.min(...state.family.kids.map(k => parseFloat(k.age)||0));
+}
+function isFamilyFriendly(a) { return a.minAge <= minFamilyAge(); }
+
+// ── MONTH HELPERS ──────────────────────────────
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function changeMonth(delta) {
+  const [y, m] = state.selectedMonth.split('-').map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  state.selectedMonth = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  renderMonthLabel();
+  renderDashboard();
+  renderPlanner();
 }
 
-function isFamilyFriendly(a) {
-  return a.minAge <= minFamilyAge();
+function goToToday() {
+  const n = new Date();
+  state.selectedMonth = `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
+  renderMonthLabel();
+  renderDashboard();
+  renderPlanner();
 }
 
-// ─────────────────────────────────────────────
-// HEADER
-// ─────────────────────────────────────────────
+function renderMonthLabel() {
+  const [y, m] = state.selectedMonth.split('-').map(Number);
+  document.getElementById('monthLabel').textContent = `${MONTH_NAMES[m-1]} ${y}`;
+}
+
+// ── HEADER ─────────────────────────────────────
 function renderHeader() {
   const { family } = state;
-  const sub = document.getElementById('headerSub');
+  document.getElementById('headerSub').textContent = family.name ? `Personalised for ${family.name}` : 'Find fun things to do with your family!';
   const badges = document.getElementById('familyBadges');
-
   if (family.name) {
-    sub.textContent = `Personalised for ${family.name}`;
-    const people = [];
-    if (family.parent) people.push(`👤 ${family.parent}`);
-    if (family.spouse) people.push(`👤 ${family.spouse}`);
-    const kidBadges = family.kids.map(k =>
-      `<span class="family-badge">${k.age < 2 ? '👶' : '🧒'} ${k.name} (${k.age} yr${k.age != 1 ? 's' : ''})</span>`
-    ).join('');
-    const peopleBadges = people.map(p => `<span class="family-badge">${p}</span>`).join('');
-    badges.innerHTML = peopleBadges + kidBadges + '<span class="family-badge">📍 Bangkok & Nearby</span>';
-  } else {
-    sub.textContent = 'Find fun things to do with your kids in Bangkok!';
-    badges.innerHTML = '';
-  }
+    const people = [family.parent, family.spouse].filter(Boolean).map(n => `<span class="family-badge">👤 ${n}</span>`).join('');
+    const kids = family.kids.map(k => `<span class="family-badge">${k.age<2?'👶':'🧒'} ${k.name} (${k.age} yr${k.age!=1?'s':''})</span>`).join('');
+    badges.innerHTML = people + kids + '<span class="family-badge">📍 Asia</span>';
+  } else { badges.innerHTML = ''; }
 }
 
-// ─────────────────────────────────────────────
-// DASHBOARD
-// ─────────────────────────────────────────────
+// ── CITY BAR ───────────────────────────────────
+function renderCityBar() {
+  const bar = document.getElementById('cityBar');
+  bar.innerHTML = CITY_NAMES.map(c =>
+    `<button class="city-btn${c===state.selectedCity?' active':''}" data-city="${c}">${CITIES[c].flag} ${c}</button>`
+  ).join('');
+  bar.onclick = e => {
+    const btn = e.target.closest('[data-city]');
+    if (!btn) return;
+    state.selectedCity = btn.dataset.city;
+    renderCityBar();
+    renderMonthLabel();
+    renderDashboard();
+    renderPlanner();
+    buildFilters();
+    renderList();
+  };
+}
+
+// ── DASHBOARD ──────────────────────────────────
 function renderDashboard() {
-  const allPlanActivities = Object.values(state.plan).flat();
-  const resolved = allPlanActivities.map(n => activityMap[n]).filter(Boolean);
-  const totalMin = resolved.reduce((s, a) => s + a.budgetMin, 0);
-  const totalMax = resolved.reduce((s, a) => s + a.budgetMax, 0);
-  const freeCount = resolved.filter(a => a.budget === 'free').length;
-  const totalCount = resolved.length;
-
+  const plan = currentPlan();
+  const all  = Object.values(plan).flat().map(n => activityByName(n)).filter(Boolean);
+  const min  = all.reduce((s,a)=>s+a.budgetMin,0);
+  const max  = all.reduce((s,a)=>s+a.budgetMax,0);
+  const free = all.filter(a=>a.budget==='free').length;
+  const cur  = CITIES[state.selectedCity].currency;
   document.getElementById('dashboard').innerHTML = `
-    <div class="dash-card">
-      <div class="dash-label">Activities This Month</div>
-      <div class="dash-value">${totalCount}</div>
-      <div class="dash-sub">across 4 weeks</div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-label">Budget Min</div>
-      <div class="dash-value">฿${totalMin.toLocaleString()}</div>
-      <div class="dash-sub">best case total</div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-label">Budget Max</div>
-      <div class="dash-value">฿${totalMax.toLocaleString()}</div>
-      <div class="dash-sub">worst case total</div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-label">Free Activities</div>
-      <div class="dash-value">${freeCount}</div>
-      <div class="dash-sub">in your plan</div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-label">Avg per Outing</div>
-      <div class="dash-value">${totalCount ? '฿' + Math.round((totalMin + totalMax) / 2 / totalCount).toLocaleString() : '—'}</div>
-      <div class="dash-sub">estimated</div>
-    </div>
-  `;
+    <div class="dash-card"><div class="dash-label">Activities</div><div class="dash-value">${all.length}</div><div class="dash-sub">this month</div></div>
+    <div class="dash-card"><div class="dash-label">Budget Min</div><div class="dash-value">${cur}${min.toLocaleString()}</div><div class="dash-sub">best case</div></div>
+    <div class="dash-card"><div class="dash-label">Budget Max</div><div class="dash-value">${cur}${max.toLocaleString()}</div><div class="dash-sub">worst case</div></div>
+    <div class="dash-card"><div class="dash-label">Free</div><div class="dash-value">${free}</div><div class="dash-sub">activities</div></div>
+    <div class="dash-card"><div class="dash-label">Avg / Outing</div><div class="dash-value">${all.length?cur+Math.round((min+max)/2/all.length).toLocaleString():'—'}</div><div class="dash-sub">estimated</div></div>`;
 }
 
-// ─────────────────────────────────────────────
-// TABS
-// ─────────────────────────────────────────────
+// ── TAB TOGGLE ─────────────────────────────────
 function switchTab(tab) {
-  state.currentTab = tab;
-  document.getElementById('planView').style.display = tab === 'plan' ? '' : 'none';
-  document.getElementById('allView').style.display = tab === 'all' ? '' : 'none';
-  document.getElementById('tabPlan').classList.toggle('active', tab === 'plan');
-  document.getElementById('tabAll').classList.toggle('active', tab === 'all');
+  document.getElementById('planView').style.display = tab==='plan'?'':'none';
+  document.getElementById('allView').style.display  = tab==='all'?'':'none';
+  document.getElementById('tabPlan').classList.toggle('active', tab==='plan');
+  document.getElementById('tabAll').classList.toggle('active',  tab==='all');
 }
 
-// ─────────────────────────────────────────────
-// PLANNER
-// ─────────────────────────────────────────────
-const WEEK_LABELS = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+// ── PLANNER ────────────────────────────────────
+const WEEK_LABELS = ['Week 1','Week 2','Week 3','Week 4'];
 
 function renderPlanner() {
   const grid = document.getElementById('weeksGrid');
   grid.innerHTML = '';
-
   [0,1,2,3].forEach(w => {
-    const weekActivities = (state.plan[w] || []).map(n => activityMap[n]).filter(Boolean);
-    const cardsHtml = weekActivities.length
-      ? weekActivities.map((a, slot) => `
+    const acts = getWeek(w).map(n=>activityByName(n)).filter(Boolean);
+    const cardsHtml = acts.length
+      ? acts.map((a,slot) => `
           <div class="plan-card">
             <button class="remove-btn" data-week="${w}" data-slot="${slot}">✕</button>
             <div class="plan-card-top">
@@ -623,172 +524,119 @@ function renderPlanner() {
             </div>
           </div>`).join('')
       : '<div class="week-empty">No activities yet<br>tap + to add one</div>';
-
     grid.innerHTML += `
       <div class="week-col">
         <div class="week-header">${WEEK_LABELS[w]}</div>
         <div class="week-activities">${cardsHtml}</div>
-        <button class="add-activity-btn" onclick="openActivityPicker(${w})">+ Add Activity</button>
+        <button class="add-activity-btn" data-add-week="${w}">+ Add Activity</button>
       </div>`;
   });
 }
 
-function removeFromPlan(weekIndex, slot) {
-  state.plan[weekIndex].splice(slot, 1);
-  saveState();
-  renderPlanner();
-  renderDashboard();
-}
-
-// Event delegation for remove buttons (avoids string escaping issues)
+// Event delegation for planner
 document.getElementById('weeksGrid').addEventListener('click', e => {
-  const btn = e.target.closest('[data-week][data-slot]');
-  if (btn) removeFromPlan(parseInt(btn.dataset.week), parseInt(btn.dataset.slot));
+  const removeBtn = e.target.closest('[data-week][data-slot]');
+  if (removeBtn) {
+    const w = parseInt(removeBtn.dataset.week), slot = parseInt(removeBtn.dataset.slot);
+    const arr = [...getWeek(w)]; arr.splice(slot, 1); setWeek(w, arr);
+    saveState(); renderPlanner(); renderDashboard(); return;
+  }
+  const addBtn = e.target.closest('[data-add-week]');
+  if (addBtn) openActivityPicker(parseInt(addBtn.dataset.addWeek));
 });
 
-// ─────────────────────────────────────────────
-// ACTIVITY PICKER (from planner + button)
-// ─────────────────────────────────────────────
-let pickingForWeek = null;
-let _pickOptions = [];
+// ── ACTIVITY PICKER ────────────────────────────
+let _pickingWeek = null, _pickOptions = [];
 
 function openActivityPicker(weekIndex) {
-  pickingForWeek = weekIndex;
-  const alreadyInWeek = new Set(state.plan[weekIndex] || []);
-  _pickOptions = activities.filter(a => !alreadyInWeek.has(a.name));
-
-  const list = document.getElementById('activityPickList');
-  list.innerHTML = _pickOptions.map((a, i) => {
-    const suitable = isFamilyFriendly(a);
-    return `
-      <div class="modal-item" data-idx="${i}">
-        <div class="modal-item-emoji">${a.emoji}</div>
-        <div class="modal-item-info">
-          <div class="modal-item-name">${a.name} ${suitable ? '✅' : '⚠️ older kids'}</div>
-          <div class="modal-item-meta">📍 ${a.location} · ${a.ageRange}</div>
-        </div>
-        <div class="modal-item-price">${a.priceRange}</div>
-      </div>`;
-  }).join('');
-
-  list.onclick = e => {
+  _pickingWeek = weekIndex;
+  const used = new Set(getWeek(weekIndex));
+  _pickOptions = cityActivities().filter(a => !used.has(a.name));
+  document.getElementById('activityPickList').innerHTML = _pickOptions.map((a,i) => `
+    <div class="modal-item" data-idx="${i}">
+      <div class="modal-item-emoji">${a.emoji}</div>
+      <div class="modal-item-info">
+        <div class="modal-item-name">${a.name} ${isFamilyFriendly(a)?'✅':'⚠️ older kids'}</div>
+        <div class="modal-item-meta">📍 ${a.location} · ${a.ageRange}</div>
+      </div>
+      <div class="modal-item-price">${a.priceRange}</div>
+    </div>`).join('');
+  document.getElementById('activityPickList').onclick = e => {
     const item = e.target.closest('[data-idx]');
     if (!item) return;
-    const activity = _pickOptions[parseInt(item.dataset.idx)];
-    if (!activity) return;
-    if (!state.plan[pickingForWeek]) state.plan[pickingForWeek] = [];
-    if (!state.plan[pickingForWeek].includes(activity.name)) {
-      state.plan[pickingForWeek].push(activity.name);
-      saveState();
-      renderPlanner();
-      renderDashboard();
-    }
+    const a = _pickOptions[parseInt(item.dataset.idx)];
+    const arr = [...getWeek(_pickingWeek)];
+    if (!arr.includes(a.name)) { arr.push(a.name); setWeek(_pickingWeek, arr); saveState(); renderPlanner(); renderDashboard(); }
     closeModal('activityPickModal');
   };
-
   openModal('activityPickModal');
 }
 
-// ─────────────────────────────────────────────
-// "ADD TO PLAN" from All Activities tab
-// ─────────────────────────────────────────────
-function openWeekPicker(activityName) {
-  state.pendingActivityForWeek = activityName;
-  const grid = document.getElementById('weekPickGrid');
-  grid.innerHTML = WEEK_LABELS.map((label, i) => {
-    const count = (state.plan[i] || []).length;
-    return `<button class="week-pick-btn" onclick="addPendingToWeek(${i})">
-      ${label}<br><span style="font-size:0.75rem;color:#94a3b8;font-weight:400">${count} activit${count===1?'y':'ies'}</span>
-    </button>`;
+// ── ADD TO PLAN (from All Activities) ──────────
+let _pendingActivity = null, _listFiltered = [];
+
+function openWeekPicker(name) {
+  _pendingActivity = name;
+  document.getElementById('weekPickGrid').innerHTML = WEEK_LABELS.map((lbl,i) => {
+    const cnt = getWeek(i).length;
+    return `<button class="week-pick-btn" data-pick-week="${i}">${lbl}<br><span style="font-size:0.75rem;color:#94a3b8;font-weight:400">${cnt} activit${cnt===1?'y':'ies'}</span></button>`;
   }).join('');
+  document.getElementById('weekPickGrid').onclick = e => {
+    const btn = e.target.closest('[data-pick-week]');
+    if (!btn) return;
+    const w = parseInt(btn.dataset.pickWeek);
+    const arr = [...getWeek(w)];
+    if (!arr.includes(_pendingActivity)) { arr.push(_pendingActivity); setWeek(w, arr); saveState(); renderPlanner(); renderDashboard(); }
+    closeModal('weekPickModal');
+  };
   openModal('weekPickModal');
 }
 
-function addPendingToWeek(weekIndex) {
-  const name = state.pendingActivityForWeek;
-  if (!name) return;
-  if (!state.plan[weekIndex]) state.plan[weekIndex] = [];
-  if (!state.plan[weekIndex].includes(name)) {
-    state.plan[weekIndex].push(name);
-    saveState();
-    renderPlanner();
-    renderDashboard();
-  }
-  closeModal('weekPickModal');
-  state.pendingActivityForWeek = null;
-}
+// ── ALL ACTIVITIES LIST ────────────────────────
+const BUDGETS = [{key:'all',label:'All Budgets'},{key:'free',label:'Free'},{key:'low',label:'Budget'},{key:'mid',label:'Mid'},{key:'high',label:'Splurge'}];
+let _activeCategory='All', _activeBudget='all';
 
-// ─────────────────────────────────────────────
-// ALL ACTIVITIES LIST
-// ─────────────────────────────────────────────
-const categories = ['All', ...new Set(activities.map(a => a.category))];
-const budgets = [
-  { key:'all', label:'All Budgets' },
-  { key:'free', label:'Free' },
-  { key:'low', label:'Budget (฿)' },
-  { key:'mid', label:'Mid (฿฿)' },
-  { key:'high', label:'Splurge (฿฿฿)' },
-];
-let activeCategory = 'All', activeBudget = 'all';
-
-function budgetClass(b) { return {free:'budget-free',low:'budget-low',mid:'budget-mid',high:'budget-high'}[b]; }
-function budgetLabel(b) { return {free:'Free',low:'Budget ฿',mid:'Mid ฿฿',high:'Splurge ฿฿฿'}[b]; }
+function budgetClass(b){ return {free:'budget-free',low:'budget-low',mid:'budget-mid',high:'budget-high'}[b]; }
+function budgetLabel(b){ return {free:'Free',low:'Budget',mid:'Mid',high:'Splurge'}[b]; }
 
 function buildFilters() {
+  const cats = ['All',...new Set(cityActivities().map(a=>a.category))];
   const catEl = document.getElementById('categoryFilters');
-  catEl.innerHTML = '';
-  categories.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn' + (c === activeCategory ? ' active' : '');
-    btn.textContent = c;
-    btn.onclick = () => { activeCategory = c; buildFilters(); renderList(); };
-    catEl.appendChild(btn);
+  catEl.innerHTML='';
+  cats.forEach(c => {
+    const btn=document.createElement('button'); btn.className='filter-btn'+(c===_activeCategory?' active':''); btn.textContent=c;
+    btn.onclick=()=>{ _activeCategory=c; buildFilters(); renderList(); }; catEl.appendChild(btn);
   });
-  const budEl = document.getElementById('budgetFilters');
-  budEl.innerHTML = '';
-  budgets.forEach(b => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn' + (b.key === activeBudget ? ' active' : '');
-    btn.textContent = b.label;
-    btn.onclick = () => { activeBudget = b.key; buildFilters(); renderList(); };
-    budEl.appendChild(btn);
+  const budEl=document.getElementById('budgetFilters');
+  budEl.innerHTML='';
+  BUDGETS.forEach(b => {
+    const btn=document.createElement('button'); btn.className='filter-btn'+(b.key===_activeBudget?' active':''); btn.textContent=b.label;
+    btn.onclick=()=>{ _activeBudget=b.key; buildFilters(); renderList(); }; budEl.appendChild(btn);
   });
 }
 
 function renderList() {
-  const query = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = activities.filter(a => {
-    const matchCat = activeCategory === 'All' || a.category === activeCategory;
-    const matchBudget = activeBudget === 'all' || a.budget === activeBudget;
-    const matchSearch = !query || a.name.toLowerCase().includes(query) || a.description.toLowerCase().includes(query) || a.location.toLowerCase().includes(query);
-    return matchCat && matchBudget && matchSearch;
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  _listFiltered = cityActivities().filter(a => {
+    const matchCat = _activeCategory==='All'||a.category===_activeCategory;
+    const matchBud = _activeBudget==='all'||a.budget===_activeBudget;
+    const matchQ   = !q||a.name.toLowerCase().includes(q)||a.description.toLowerCase().includes(q)||a.location.toLowerCase().includes(q);
+    return matchCat&&matchBud&&matchQ;
   });
-
-  document.getElementById('resultsCount').textContent = `Showing ${filtered.length} of ${activities.length} activities`;
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
-
-  if (!filtered.length) {
-    grid.innerHTML = '<div class="no-results">😔 No activities found. Try adjusting your filters.</div>';
-    return;
-  }
-
-  filtered.forEach((a, i) => {
-    const suitable = isFamilyFriendly(a);
-    grid.innerHTML += `
+  document.getElementById('resultsCount').textContent=`Showing ${_listFiltered.length} of ${cityActivities().length} activities`;
+  const grid=document.getElementById('grid');
+  grid.innerHTML='';
+  if(!_listFiltered.length){ grid.innerHTML='<div class="no-results">😔 No activities found.</div>'; return; }
+  _listFiltered.forEach((a,i)=>{
+    const suitable=isFamilyFriendly(a);
+    grid.innerHTML+=`
       <div class="card">
-        <div class="card-header">
-          <div class="card-emoji">${a.emoji}</div>
-          <div class="card-title-wrap">
-            <div class="card-title">${a.name}</div>
-            <div class="card-location">📍 ${a.location}</div>
-          </div>
-        </div>
+        <div class="card-header"><div class="card-emoji">${a.emoji}</div><div class="card-title-wrap"><div class="card-title">${a.name}</div><div class="card-location">📍 ${a.location}</div></div></div>
         <div class="tags">
           <span class="tag tag-category">${a.category}</span>
           <span class="tag tag-age">👶 ${a.ageRange}</span>
           <span class="budget-tag ${budgetClass(a.budget)}">${budgetLabel(a.budget)}</span>
-          ${suitable && state.family.kids.length ? '<span class="tag tag-family">✅ Family pick</span>' : ''}
+          ${suitable&&state.family.kids.length?'<span class="tag tag-family">✅ Family pick</span>':''}
         </div>
         <div class="card-desc">${a.description}</div>
         <div class="card-footer">
@@ -800,90 +648,66 @@ function renderList() {
         </div>
       </div>`;
   });
-
-  // Event delegation — avoids string escaping issues with activity names
   grid.onclick = e => {
-    const btn = e.target.closest('[data-list-idx]');
-    if (btn) openWeekPicker(filtered[parseInt(btn.dataset.listIdx)].name);
+    const btn=e.target.closest('[data-list-idx]');
+    if(btn) openWeekPicker(_listFiltered[parseInt(btn.dataset.listIdx)].name);
   };
 }
 
-// ─────────────────────────────────────────────
-// FAMILY SETUP MODAL
-// ─────────────────────────────────────────────
+// ── FAMILY SETUP ───────────────────────────────
 function openSetup() {
-  document.getElementById('familyNameInput').value = state.family.name || '';
-  document.getElementById('parentNameInput').value = state.family.parent || '';
-  document.getElementById('spouseNameInput').value = state.family.spouse || '';
-  document.getElementById('setupError').style.display = 'none';
-  const list = document.getElementById('kidsList');
-  list.innerHTML = '';
-  (state.family.kids.length ? state.family.kids : [{ name: '', age: '' }]).forEach(k => addKidRow(k));
+  document.getElementById('familyNameInput').value=state.family.name||'';
+  document.getElementById('parentNameInput').value=state.family.parent||'';
+  document.getElementById('spouseNameInput').value=state.family.spouse||'';
+  document.getElementById('setupError').style.display='none';
+  const list=document.getElementById('kidsList'); list.innerHTML='';
+  (state.family.kids.length?state.family.kids:[{name:'',age:''}]).forEach(k=>addKidRow(k));
   openModal('setupModal');
 }
 
-function closeSetup() {
-  closeModal('setupModal');
-}
-
-function addKidRow(kid = { name: '', age: '' }) {
-  const list = document.getElementById('kidsList');
-  const div = document.createElement('div');
-  div.className = 'kid-row';
-  div.innerHTML = `
-    <input class="form-input" placeholder="Child's name" value="${kid.name}" />
-    <input class="form-input age-input" type="number" placeholder="Age (yrs)" min="0" max="18" step="0.5" value="${kid.age}" />
-    <button class="remove-kid-btn" onclick="this.parentElement.remove()">✕</button>`;
+function addKidRow(kid={name:'',age:''}) {
+  const list=document.getElementById('kidsList');
+  const div=document.createElement('div'); div.className='kid-row';
+  div.innerHTML=`<input class="form-input" placeholder="Child's name" value="${kid.name}" /><input class="form-input age-input" type="number" placeholder="Age (yrs)" min="0" max="18" step="0.5" value="${kid.age}" /><button class="remove-kid-btn" onclick="this.parentElement.remove()">✕</button>`;
   list.appendChild(div);
 }
 
 function saveFamily() {
-  const name = document.getElementById('familyNameInput').value.trim();
-  const errEl = document.getElementById('setupError');
-  if (!name) {
-    errEl.textContent = 'Please enter your family name.';
-    errEl.style.display = 'block';
-    return;
-  }
-  errEl.style.display = 'none';
-  const parent = document.getElementById('parentNameInput').value.trim();
-  const spouse = document.getElementById('spouseNameInput').value.trim();
-  const rows = document.querySelectorAll('#kidsList .kid-row');
-  const kids = [];
-  rows.forEach(row => {
-    const inputs = row.querySelectorAll('input');
-    const kName = inputs[0].value.trim();
-    const kAge = parseFloat(inputs[1].value);
-    if (kName && !isNaN(kAge)) kids.push({ name: kName, age: kAge });
+  const name=document.getElementById('familyNameInput').value.trim();
+  const errEl=document.getElementById('setupError');
+  if(!name){errEl.textContent='Please enter your family name.';errEl.style.display='block';return;}
+  errEl.style.display='none';
+  const parent=document.getElementById('parentNameInput').value.trim();
+  const spouse=document.getElementById('spouseNameInput').value.trim();
+  const kids=[];
+  document.querySelectorAll('#kidsList .kid-row').forEach(row=>{
+    const ins=row.querySelectorAll('input');
+    const kn=ins[0].value.trim(), ka=parseFloat(ins[1].value);
+    if(kn&&!isNaN(ka)) kids.push({name:kn,age:ka});
   });
-  state.family = { name, parent, spouse, kids };
-  saveState();
-  closeModal('setupModal');
-  renderAll();
+  state.family={name,parent,spouse,kids};
+  saveState(); closeModal('setupModal'); renderAll();
 }
 
-// ─────────────────────────────────────────────
-// MODAL HELPERS
-// ─────────────────────────────────────────────
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el && el.id !== 'setupModal') closeModal(el.id); });
+// ── MODALS ─────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);});
 });
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
+// ── RENDER ALL ─────────────────────────────────
 function renderAll() {
   renderHeader();
+  renderCityBar();
+  renderMonthLabel();
   renderDashboard();
   renderPlanner();
   buildFilters();
   renderList();
 }
 
-// Startup is handled by auth.onAuthStateChanged above
+// Startup handled by auth.onAuthStateChanged
 </script>
 </body>
 </html>
