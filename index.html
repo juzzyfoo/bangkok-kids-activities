@@ -281,6 +281,10 @@
       .week-pick-grid { grid-template-columns: 1fr; }
     }
   </style>
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -288,7 +292,12 @@
   <h1>🎉 Bangkok Kids Activities</h1>
   <p id="headerSub">Find fun things to do with your kids!</p>
   <div class="family-badges" id="familyBadges"></div>
-  <button class="edit-family-btn" onclick="openSetup()">✏️ Edit Family</button>
+  <div style="position:absolute;top:16px;right:16px;display:flex;gap:8px;align-items:center;">
+    <button class="edit-family-btn" id="loginBtn" onclick="signIn()" style="display:none;">🔑 Sign In</button>
+    <button class="edit-family-btn" id="logoutBtn" onclick="signOut()" style="display:none;">👋 Sign Out</button>
+    <button class="edit-family-btn" onclick="openSetup()">✏️ Edit Family</button>
+  </div>
+  <div id="authStatus" style="margin-top:8px;font-size:0.75rem;opacity:0.75;"></div>
 </header>
 
 <!-- Dashboard -->
@@ -380,6 +389,68 @@
 
 <script>
 // ─────────────────────────────────────────────
+// FIREBASE
+// ─────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey: "AIzaSyA5dYU6D2eZBFoQG9-4NHfSKWXwsI05LNo",
+  authDomain: "bangkok-kids-activities.firebaseapp.com",
+  projectId: "bangkok-kids-activities",
+  storageBucket: "bangkok-kids-activities.firebasestorage.app",
+  messagingSenderId: "757324517545",
+  appId: "1:757324517545:web:243a2d44c8fd5ba0d459b8"
+});
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+function signIn() {
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+}
+function signOut() {
+  auth.signOut();
+}
+
+async function saveToFirestore() {
+  const user = auth.currentUser;
+  if (!user) return;
+  await db.collection('users').doc(user.uid).set({
+    family: state.family,
+    plan: state.plan
+  });
+}
+
+auth.onAuthStateChanged(async user => {
+  const loginBtn  = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const authStatus = document.getElementById('authStatus');
+
+  if (user) {
+    loginBtn.style.display  = 'none';
+    logoutBtn.style.display = 'inline-block';
+    authStatus.textContent  = `Signed in as ${user.email}`;
+
+    // Load data from Firestore
+    const doc = await db.collection('users').doc(user.uid).get();
+    if (doc.exists) {
+      const data = doc.data();
+      if (data.family) state.family = data.family;
+      if (data.plan)   state.plan   = data.plan;
+    }
+  } else {
+    loginBtn.style.display  = 'inline-block';
+    logoutBtn.style.display = 'none';
+    authStatus.textContent  = 'Sign in to sync across devices';
+
+    // Fall back to localStorage
+    const saved = loadState();
+    if (saved.family) state.family = saved.family;
+    if (saved.plan)   state.plan   = saved.plan;
+  }
+
+  renderAll();
+  if (!state.family.name) setTimeout(() => openSetup(), 300);
+});
+
+// ─────────────────────────────────────────────
 // DATA
 // ─────────────────────────────────────────────
 const activities = [
@@ -426,7 +497,8 @@ function saveState() {
   try {
     _store.setItem('bkk_family', JSON.stringify(state.family));
     _store.setItem('bkk_plan', JSON.stringify(state.plan));
-  } catch { /* storage unavailable — state lives in memory only */ }
+  } catch { /* storage unavailable */ }
+  saveToFirestore(); // also sync to Firestore if logged in
 }
 
 const loaded = loadState();
@@ -812,12 +884,7 @@ function renderAll() {
   renderList();
 }
 
-renderAll();
-
-// Show setup on first visit
-if (!state.family.name) {
-  setTimeout(() => openSetup(), 300);
-}
+// Startup is handled by auth.onAuthStateChanged above
 </script>
 </body>
 </html>
