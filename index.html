@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bangkok Kids Activities</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f7ff;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #ff6b6b, #ffa500);
+      color: white;
+      padding: 32px 20px 24px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; }
+    header p { margin-top: 8px; font-size: 1rem; opacity: 0.9; }
+
+    .controls {
+      max-width: 1100px;
+      margin: 24px auto 0;
+      padding: 0 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 16px;
+      border: 2px solid #dde;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-wrap input:focus { border-color: #ff6b6b; }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 2px solid #dde;
+      border-radius: 20px;
+      background: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
+    .filter-btn.active { background: #ff6b6b; border-color: #ff6b6b; color: white; }
+
+    .results-count {
+      max-width: 1100px;
+      margin: 12px auto 0;
+      padding: 0 16px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .grid {
+      max-width: 1100px;
+      margin: 16px auto 40px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    }
+
+    .card-header {
+      padding: 20px 20px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .card-emoji {
+      font-size: 2.4rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .card-title-wrap { flex: 1; }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .card-location {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    .tags {
+      padding: 10px 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .tag-category { background: #eef2ff; color: #4f46e5; }
+    .tag-age { background: #f0fdf4; color: #15803d; }
+
+    .budget-tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .budget-free { background: #dcfce7; color: #16a34a; }
+    .budget-low  { background: #fef9c3; color: #a16207; }
+    .budget-mid  { background: #ffedd5; color: #c2410c; }
+    .budget-high { background: #fee2e2; color: #dc2626; }
+
+    .card-desc {
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      color: #555;
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-footer {
+      padding: 12px 20px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #f0f0f0;
+      gap: 10px;
+    }
+
+    .price-range {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .price-range span {
+      display: block;
+      font-size: 0.75rem;
+      color: #888;
+      font-weight: 400;
+    }
+
+    .map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: #ff6b6b;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .map-btn:hover { background: #e05555; }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+      font-size: 1.1rem;
+      grid-column: 1 / -1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    @media (max-width: 500px) {
+      header h1 { font-size: 1.6rem; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎉 Bangkok Kids Activities</h1>
+  <p>Find fun things to do with your kids in Bangkok &amp; nearby areas</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="🔍 Search activities..." oninput="render()" />
+  </div>
+  <div class="filter-group" id="categoryFilters"></div>
+  <div class="filter-group" id="budgetFilters"></div>
+</div>
+<div class="results-count" id="resultsCount"></div>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  Prices are approximate and may vary. Always check the official website for the latest info. 🌏
+</footer>
+
+<script>
+const activities = [
+  {
+    name: "KidZania Bangkok",
+    emoji: "🏙️",
+    location: "Siam Paragon, Bangkok",
+    category: "Indoor",
+    ageRange: "3–14 yrs",
+    budget: "high",
+    priceRange: "฿800–฿1,000 / child",
+    description: "A mini city where kids role-play as doctors, pilots, firefighters, and more. Highly interactive and educational.",
+    mapUrl: "https://maps.google.com/?q=KidZania+Bangkok+Siam+Paragon"
+  },
+  {
+    name: "SEA LIFE Bangkok Ocean World",
+    emoji: "🦈",
+    location: "Siam Paragon, Bangkok",
+    category: "Indoor",
+    ageRange: "All ages",
+    budget: "mid",
+    priceRange: "฿490–฿690 / child",
+    description: "Largest aquarium in Southeast Asia with over 30,000 marine creatures, a shark walk, and glass-bottom boat rides.",
+    mapUrl: "https://maps.google.com/?q=SEA+LIFE+Bangkok+Ocean+World"
+  },
+  {
+    name: "Safari World Bangkok",
+    emoji: "🦁",
+    location: "Min Buri, Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "mid",
+    priceRange: "฿500–฿900 / person",
+    description: "Drive through enclosures with lions, giraffes, zebras, and more — or visit the marine park with dolphin & bird shows.",
+    mapUrl: "https://maps.google.com/?q=Safari+World+Bangkok"
+  },
+  {
+    name: "Dream World",
+    emoji: "🎢",
+    location: "Pathum Thani, near Bangkok",
+    category: "Outdoor",
+    ageRange: "4+ yrs",
+    budget: "mid",
+    priceRange: "฿350–฿500 / person",
+    description: "A fun theme park with roller coasters, a snow town, fantasy land, and adventure land. Great for a full-day out.",
+    mapUrl: "https://maps.google.com/?q=Dream+World+Thailand"
+  },
+  {
+    name: "Siam Park City",
+    emoji: "🌊",
+    location: "Khan Na Yao, Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "mid",
+    priceRange: "฿400–฿650 / person",
+    description: "One of the largest water parks in Asia with wave pools, lazy rivers, and thrilling water slides for all ages.",
+    mapUrl: "https://maps.google.com/?q=Siam+Park+City+Bangkok"
+  },
+  {
+    name: "Children's Discovery Museum",
+    emoji: "🔬",
+    location: "Chatuchak, Bangkok",
+    category: "Indoor",
+    ageRange: "2–12 yrs",
+    budget: "free",
+    priceRange: "Free entry",
+    description: "Hands-on science and discovery exhibits designed for young children. Free and very educational — a hidden gem.",
+    mapUrl: "https://maps.google.com/?q=Children%27s+Discovery+Museum+Bangkok"
+  },
+  {
+    name: "Art in Paradise Bangkok",
+    emoji: "🎨",
+    location: "Ratchadaphisek, Bangkok",
+    category: "Indoor",
+    ageRange: "All ages",
+    budget: "low",
+    priceRange: "฿200–฿400 / person",
+    description: "3D illusion art museum where you become part of the art! Perfect for family photos and interactive fun.",
+    mapUrl: "https://maps.google.com/?q=Art+in+Paradise+Bangkok"
+  },
+  {
+    name: "Bounce Thailand",
+    emoji: "🏃",
+    location: "Ekkamai, Bangkok",
+    category: "Indoor",
+    ageRange: "3+ yrs",
+    budget: "low",
+    priceRange: "฿250–฿450 / hour",
+    description: "Massive indoor trampoline park with foam pits, dodgeball courts, slam dunk zones, and ninja courses.",
+    mapUrl: "https://maps.google.com/?q=Bounce+Bangkok+Ekkamai"
+  },
+  {
+    name: "Bangkok Butterfly Garden & Insectarium",
+    emoji: "🦋",
+    location: "Chatuchak Park, Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "free",
+    priceRange: "Free entry",
+    description: "A serene garden where kids can walk among hundreds of free-flying butterflies and learn about insects.",
+    mapUrl: "https://maps.google.com/?q=Bangkok+Butterfly+Garden+Insectarium"
+  },
+  {
+    name: "Muang Boran (Ancient City)",
+    emoji: "🏛️",
+    location: "Samut Prakan, near Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "low",
+    priceRange: "฿300–฿500 / person",
+    description: "The world's largest outdoor museum with miniature replicas of Thailand's most famous temples and monuments.",
+    mapUrl: "https://maps.google.com/?q=Muang+Boran+Ancient+City+Samut+Prakan"
+  },
+  {
+    name: "Dusit Zoo",
+    emoji: "🐘",
+    location: "Dusit, Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "low",
+    priceRange: "฿100–฿150 / person",
+    description: "Classic Bangkok zoo with elephants, hippos, giraffes, and a children's zoo area. Shaded and kid-friendly.",
+    mapUrl: "https://maps.google.com/?q=Dusit+Zoo+Bangkok"
+  },
+  {
+    name: "Central World Ice Skating",
+    emoji: "⛸️",
+    location: "Ratchaprasong, Bangkok",
+    category: "Indoor",
+    ageRange: "4+ yrs",
+    budget: "low",
+    priceRange: "฿200–฿350 / session",
+    description: "Air-conditioned indoor ice rink in the heart of Bangkok. Includes skate rental. Great cool-down activity.",
+    mapUrl: "https://maps.google.com/?q=ZEN+Ice+Skating+CentralWorld+Bangkok"
+  },
+  {
+    name: "Labyrinth at Siam Discovery",
+    emoji: "🧩",
+    location: "Siam Discovery, Bangkok",
+    category: "Indoor",
+    ageRange: "5+ yrs",
+    budget: "mid",
+    priceRange: "฿450–฿550 / person",
+    description: "Immersive puzzle rooms and escape experiences designed for families. Creative and teamwork-oriented.",
+    mapUrl: "https://maps.google.com/?q=Siam+Discovery+Bangkok"
+  },
+  {
+    name: "Airplane Graveyard",
+    emoji: "✈️",
+    location: "Ramkhamhaeng, Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "free",
+    priceRange: "Free (small tip welcomed)",
+    description: "Explore old decommissioned planes in a quirky outdoor setting. Unique photo spot loved by curious kids.",
+    mapUrl: "https://maps.google.com/?q=Bangkok+Airplane+Graveyard+Ramkhamhaeng"
+  },
+  {
+    name: "Kidzooona (ICONSIAM)",
+    emoji: "🎠",
+    location: "ICONSIAM, Bangkok",
+    category: "Indoor",
+    ageRange: "1–10 yrs",
+    budget: "low",
+    priceRange: "฿150–฿350 / session",
+    description: "Indoor play zone with soft play areas, rides, and activities for toddlers and young children inside ICONSIAM mall.",
+    mapUrl: "https://maps.google.com/?q=Kidzooona+ICONSIAM+Bangkok"
+  },
+  {
+    name: "Avani+ Riverside Bangkok Pool",
+    emoji: "🏊",
+    location: "Thon Buri, Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "high",
+    priceRange: "฿800–฿1,200 / person (day pass)",
+    description: "Rooftop infinity pool with views of the Chao Phraya River. Some hotel pools offer day pass access for families.",
+    mapUrl: "https://maps.google.com/?q=Avani+Riverside+Bangkok+Hotel"
+  },
+  {
+    name: "Chatuchak Weekend Market",
+    emoji: "🛍️",
+    location: "Chatuchak, Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "free",
+    priceRange: "Free entry (spend as you go)",
+    description: "Massive weekend market with a kids section, animals, food, and endless stalls to explore as a family.",
+    mapUrl: "https://maps.google.com/?q=Chatuchak+Weekend+Market+Bangkok"
+  },
+  {
+    name: "Samphran Elephant Ground & Zoo",
+    emoji: "🐊",
+    location: "Nakhon Pathom, near Bangkok",
+    category: "Outdoor",
+    ageRange: "All ages",
+    budget: "low",
+    priceRange: "฿200–฿450 / person",
+    description: "See elephant shows, crocodile wrestling, and wildlife up close. About 40 minutes from central Bangkok.",
+    mapUrl: "https://maps.google.com/?q=Samphran+Elephant+Ground+Zoo"
+  }
+];
+
+const categories = ["All", ...new Set(activities.map(a => a.category))];
+const budgets = [
+  { key: "all",  label: "All Budgets" },
+  { key: "free", label: "Free" },
+  { key: "low",  label: "Budget (฿)" },
+  { key: "mid",  label: "Mid (฿฿)" },
+  { key: "high", label: "Splurge (฿฿฿)" },
+];
+
+let activeCategory = "All";
+let activeBudget = "all";
+
+function budgetClass(b) {
+  return { free: "budget-free", low: "budget-low", mid: "budget-mid", high: "budget-high" }[b];
+}
+function budgetLabel(b) {
+  return { free: "Free", low: "Budget ฿", mid: "Mid ฿฿", high: "Splurge ฿฿฿" }[b];
+}
+
+function buildFilters() {
+  const catEl = document.getElementById("categoryFilters");
+  catEl.innerHTML = "";
+  categories.forEach(c => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (c === activeCategory ? " active" : "");
+    btn.textContent = c;
+    btn.onclick = () => { activeCategory = c; buildFilters(); render(); };
+    catEl.appendChild(btn);
+  });
+
+  const budEl = document.getElementById("budgetFilters");
+  budEl.innerHTML = "";
+  budgets.forEach(b => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (b.key === activeBudget ? " active" : "");
+    btn.textContent = b.label;
+    btn.onclick = () => { activeBudget = b.key; buildFilters(); render(); };
+    budEl.appendChild(btn);
+  });
+}
+
+function render() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const filtered = activities.filter(a => {
+    const matchCat = activeCategory === "All" || a.category === activeCategory;
+    const matchBudget = activeBudget === "all" || a.budget === activeBudget;
+    const matchSearch = !query ||
+      a.name.toLowerCase().includes(query) ||
+      a.description.toLowerCase().includes(query) ||
+      a.location.toLowerCase().includes(query);
+    return matchCat && matchBudget && matchSearch;
+  });
+
+  document.getElementById("resultsCount").textContent =
+    `Showing ${filtered.length} of ${activities.length} activities`;
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-results">😔 No activities found. Try adjusting your filters.</div>';
+    return;
+  }
+
+  filtered.forEach(a => {
+    grid.innerHTML += `
+      <div class="card">
+        <div class="card-header">
+          <div class="card-emoji">${a.emoji}</div>
+          <div class="card-title-wrap">
+            <div class="card-title">${a.name}</div>
+            <div class="card-location">📍 ${a.location}</div>
+          </div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-category">${a.category}</span>
+          <span class="tag tag-age">👶 ${a.ageRange}</span>
+          <span class="budget-tag ${budgetClass(a.budget)}">${budgetLabel(a.budget)}</span>
+        </div>
+        <div class="card-desc">${a.description}</div>
+        <div class="card-footer">
+          <div class="price-range">
+            ${a.priceRange}
+            <span>Approx. entry price</span>
+          </div>
+          <a class="map-btn" href="${a.mapUrl}" target="_blank" rel="noopener">
+            🗺️ View Map
+          </a>
+        </div>
+      </div>`;
+  });
+}
+
+buildFilters();
+render();
+</script>
+</body>
+</html>
