@@ -6,224 +6,278 @@
   <title>Bangkok Kids Activities</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f7ff; color: #1a1a2e; min-height: 100vh; }
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f7ff;
-      color: #1a1a2e;
-      min-height: 100vh;
-    }
-
+    /* ── Header ── */
     header {
       background: linear-gradient(135deg, #6366f1, #06b6d4);
       color: white;
-      padding: 32px 20px 24px;
+      padding: 28px 20px 22px;
       text-align: center;
+      position: relative;
     }
-
-    header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; }
-    header p { margin-top: 8px; font-size: 1rem; opacity: 0.9; }
-
-    .controls {
-      max-width: 1100px;
-      margin: 24px auto 0;
-      padding: 0 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
+    header h1 { font-size: 2rem; font-weight: 800; }
+    header p { margin-top: 6px; font-size: 0.95rem; opacity: 0.85; }
+    .family-badges { margin-top: 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .family-badge {
+      background: rgba(255,255,255,0.2);
+      border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 0.82rem; font-weight: 600;
     }
-
-    .search-wrap {
-      flex: 1;
-      min-width: 200px;
+    .edit-family-btn {
+      position: absolute; top: 20px; right: 16px;
+      background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.5);
+      color: white; border-radius: 20px; padding: 6px 14px;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
     }
+    .edit-family-btn:hover { background: rgba(255,255,255,0.35); }
 
-    .search-wrap input {
-      width: 100%;
-      padding: 10px 16px;
-      border: 2px solid #dde;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
+    /* ── Dashboard ── */
+    .dashboard {
+      max-width: 1100px; margin: 24px auto 0; padding: 0 16px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px;
     }
-
-    .search-wrap input:focus { border-color: #ff6b6b; }
-
-    .filter-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .dash-card {
+      background: white; border-radius: 14px;
+      padding: 18px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      display: flex; flex-direction: column; align-items: flex-start;
     }
+    .dash-label { font-size: 0.72rem; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .dash-value { font-size: 1.6rem; font-weight: 800; color: #6366f1; margin-top: 6px; line-height: 1; }
+    .dash-sub { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
 
-    .filter-btn {
-      padding: 8px 16px;
-      border: 2px solid #dde;
-      border-radius: 20px;
-      background: white;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
+    /* ── Tabs ── */
+    .tabs {
+      max-width: 1100px; margin: 28px auto 0; padding: 0 16px;
+      display: flex; gap: 0; border-bottom: 2px solid #e2e8f0;
+    }
+    .tab-btn {
+      padding: 10px 22px; font-size: 0.9rem; font-weight: 700;
+      border: none; background: none; cursor: pointer; color: #94a3b8;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
       transition: all 0.2s;
     }
+    .tab-btn.active { color: #6366f1; border-bottom-color: #6366f1; }
+    .tab-btn:hover:not(.active) { color: #475569; }
 
-    .filter-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
-    .filter-btn.active { background: #ff6b6b; border-color: #ff6b6b; color: white; }
+    /* ── Monthly Planner ── */
+    #planView { max-width: 1100px; margin: 0 auto; padding: 16px 16px 40px; }
 
-    .results-count {
-      max-width: 1100px;
-      margin: 12px auto 0;
-      padding: 0 16px;
-      font-size: 0.85rem;
-      color: #666;
+    .weeks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
     }
+
+    .week-col {
+      background: white; border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .week-header {
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      color: white; font-size: 0.8rem; font-weight: 700;
+      padding: 10px 14px; letter-spacing: 0.5px;
+    }
+    .week-activities { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+    .plan-card {
+      border: 1.5px solid #e2e8f0; border-radius: 12px;
+      padding: 12px; position: relative;
+      transition: border-color 0.2s;
+    }
+    .plan-card:hover { border-color: #6366f1; }
+    .plan-card-top { display: flex; gap: 10px; align-items: flex-start; }
+    .plan-card-emoji { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
+    .plan-card-info { flex: 1; }
+    .plan-card-name { font-size: 0.88rem; font-weight: 700; line-height: 1.3; }
+    .plan-card-loc { font-size: 0.72rem; color: #888; margin-top: 2px; }
+    .plan-card-price { font-size: 0.78rem; font-weight: 600; color: #6366f1; margin-top: 6px; }
+    .remove-btn {
+      position: absolute; top: 8px; right: 8px;
+      background: #fee2e2; border: none; color: #dc2626;
+      width: 22px; height: 22px; border-radius: 50%;
+      font-size: 0.7rem; cursor: pointer; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .remove-btn:hover { background: #fecaca; }
+    .plan-card-actions { display: flex; gap: 6px; margin-top: 8px; }
+    .plan-map-btn {
+      padding: 5px 10px; background: #ff6b6b; color: white;
+      border: none; border-radius: 6px; font-size: 0.72rem; font-weight: 600;
+      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .plan-map-btn:hover { background: #e05555; }
+
+    .week-empty {
+      text-align: center; padding: 20px 10px;
+      color: #bbb; font-size: 0.82rem;
+    }
+
+    .add-activity-btn {
+      margin: 0 10px 10px; padding: 9px;
+      border: 2px dashed #c7d2fe; border-radius: 10px;
+      background: none; color: #6366f1;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      width: calc(100% - 20px); transition: all 0.2s;
+    }
+    .add-activity-btn:hover { background: #eef2ff; border-color: #6366f1; }
+
+    /* ── All Activities View ── */
+    #allView { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 16px 0 0; }
+    .search-wrap { flex: 1; min-width: 200px; }
+    .search-wrap input {
+      width: 100%; padding: 10px 16px; border: 2px solid #dde;
+      border-radius: 10px; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+    }
+    .search-wrap input:focus { border-color: #6366f1; }
+    .filter-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter-btn {
+      padding: 8px 16px; border: 2px solid #dde; border-radius: 20px;
+      background: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: #6366f1; color: #6366f1; }
+    .filter-btn.active { background: #6366f1; border-color: #6366f1; color: white; }
+    .results-count { font-size: 0.85rem; color: #666; padding: 10px 0 0; }
 
     .grid {
-      max-width: 1100px;
-      margin: 16px auto 40px;
-      padding: 0 16px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
+      margin-top: 16px; display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
     }
-
     .card {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
+      background: white; border-radius: 16px; overflow: hidden;
       box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
     }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.12);
-    }
-
-    .card-header {
-      padding: 20px 20px 0;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
-    .card-emoji {
-      font-size: 2.4rem;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+    .card-header { padding: 20px 20px 0; display: flex; align-items: flex-start; gap: 14px; }
+    .card-emoji { font-size: 2.4rem; line-height: 1; flex-shrink: 0; }
     .card-title-wrap { flex: 1; }
-
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      line-height: 1.3;
-    }
-
-    .card-location {
-      font-size: 0.8rem;
-      color: #888;
-      margin-top: 3px;
-    }
-
-    .tags {
-      padding: 10px 20px 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .tag {
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
+    .card-title { font-size: 1rem; font-weight: 700; line-height: 1.3; }
+    .card-location { font-size: 0.78rem; color: #888; margin-top: 3px; }
+    .tags { padding: 10px 20px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { padding: 3px 10px; border-radius: 12px; font-size: 0.73rem; font-weight: 600; }
     .tag-category { background: #eef2ff; color: #4f46e5; }
     .tag-age { background: #f0fdf4; color: #15803d; }
-
-    .budget-tag {
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
+    .tag-family { background: #fdf4ff; color: #9333ea; }
+    .budget-tag { padding: 3px 10px; border-radius: 12px; font-size: 0.73rem; font-weight: 700; }
     .budget-free { background: #dcfce7; color: #16a34a; }
     .budget-low  { background: #fef9c3; color: #a16207; }
     .budget-mid  { background: #ffedd5; color: #c2410c; }
     .budget-high { background: #fee2e2; color: #dc2626; }
-
-    .card-desc {
-      padding: 12px 20px;
-      font-size: 0.88rem;
-      color: #555;
-      line-height: 1.6;
-      flex: 1;
-    }
-
+    .card-desc { padding: 10px 20px; font-size: 0.85rem; color: #555; line-height: 1.6; flex: 1; }
     .card-footer {
-      padding: 12px 20px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid #f0f0f0;
-      gap: 10px;
+      padding: 12px 20px 16px; display: flex; align-items: center;
+      justify-content: space-between; border-top: 1px solid #f0f0f0; gap: 10px;
     }
-
-    .price-range {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #333;
-    }
-
-    .price-range span {
-      display: block;
-      font-size: 0.75rem;
-      color: #888;
-      font-weight: 400;
-    }
-
+    .price-range { font-size: 0.85rem; font-weight: 600; color: #333; }
+    .price-range span { display: block; font-size: 0.73rem; color: #888; font-weight: 400; }
+    .card-btns { display: flex; gap: 8px; }
     .map-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: #ff6b6b;
-      color: white;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 600;
-      transition: background 0.2s;
-      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 7px 12px; background: #ff6b6b; color: white;
+      border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600;
+      transition: background 0.2s; white-space: nowrap; border: none; cursor: pointer;
     }
-
     .map-btn:hover { background: #e05555; }
-
-    .no-results {
-      text-align: center;
-      padding: 60px 20px;
-      color: #999;
-      font-size: 1.1rem;
-      grid-column: 1 / -1;
+    .add-to-plan-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 7px 12px; background: #6366f1; color: white;
+      border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+      border: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
     }
+    .add-to-plan-btn:hover { background: #4f46e5; }
+    .no-results { text-align: center; padding: 60px 20px; color: #999; font-size: 1rem; grid-column: 1/-1; }
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.8rem;
-      color: #aaa;
+    /* ── Modals ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 200;
+      align-items: center; justify-content: center; padding: 20px;
     }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: 20px; width: 100%;
+      max-width: 540px; max-height: 85vh; display: flex; flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      padding: 20px 24px 16px; border-bottom: 1px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #888; }
+    .modal-body { overflow-y: auto; padding: 16px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid #f0f0f0; flex-shrink: 0; }
+
+    /* Pick week modal */
+    .week-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .week-pick-btn {
+      padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px;
+      background: white; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+      color: #6366f1; transition: all 0.2s; text-align: center;
+    }
+    .week-pick-btn:hover { background: #eef2ff; border-color: #6366f1; }
+
+    /* Activity picker modal items */
+    .modal-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px;
+      border-radius: 12px; cursor: pointer; transition: background 0.15s;
+      border: 2px solid transparent;
+    }
+    .modal-item:hover { background: #f5f3ff; border-color: #6366f1; }
+    .modal-item-emoji { font-size: 1.6rem; flex-shrink: 0; }
+    .modal-item-info { flex: 1; }
+    .modal-item-name { font-size: 0.88rem; font-weight: 700; }
+    .modal-item-meta { font-size: 0.73rem; color: #888; margin-top: 2px; }
+    .modal-item-price { font-size: 0.78rem; font-weight: 600; color: #6366f1; white-space: nowrap; flex-shrink: 0; }
+
+    /* Family Setup Modal */
+    .setup-intro { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: #444; margin-bottom: 6px; }
+    .form-input {
+      width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0;
+      border-radius: 10px; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .form-input:focus { border-color: #6366f1; }
+    .kids-list { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+    .kid-row { display: flex; gap: 8px; align-items: center; }
+    .kid-row .form-input { flex: 1; }
+    .kid-row .age-input { width: 90px; flex-shrink: 0; }
+    .remove-kid-btn {
+      background: #fee2e2; border: none; color: #dc2626;
+      width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+      font-size: 1rem; font-weight: 700; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .add-kid-btn {
+      padding: 8px 14px; border: 2px dashed #c7d2fe; border-radius: 10px;
+      background: none; color: #6366f1; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; margin-top: 4px; transition: all 0.2s;
+    }
+    .add-kid-btn:hover { background: #eef2ff; }
+    .save-btn {
+      width: 100%; padding: 12px; background: #6366f1; color: white;
+      border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .save-btn:hover { background: #4f46e5; }
+
+    footer { text-align: center; padding: 20px; font-size: 0.78rem; color: #aaa; }
 
     @media (max-width: 500px) {
-      header h1 { font-size: 1.6rem; }
+      header h1 { font-size: 1.5rem; }
+      .edit-family-btn { position: static; margin-top: 10px; }
+      .weeks-grid { grid-template-columns: 1fr; }
       .grid { grid-template-columns: 1fr; }
+      .week-pick-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -231,291 +285,393 @@
 
 <header>
   <h1>🎉 Bangkok Kids Activities</h1>
-  <p>Find fun things to do with your kids in Bangkok &amp; nearby areas</p>
+  <p id="headerSub">Find fun things to do with your kids!</p>
+  <div class="family-badges" id="familyBadges"></div>
+  <button class="edit-family-btn" onclick="openSetup()">✏️ Edit Family</button>
 </header>
 
-<div class="controls">
-  <div class="search-wrap">
-    <input type="text" id="searchInput" placeholder="🔍 Search activities..." oninput="render()" />
-  </div>
-  <div class="filter-group" id="categoryFilters"></div>
-  <div class="filter-group" id="budgetFilters"></div>
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard"></div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab-btn active" id="tabPlan" onclick="switchTab('plan')">📅 This Month's Plan</button>
+  <button class="tab-btn" id="tabAll" onclick="switchTab('all')">🗺️ All Activities</button>
 </div>
-<div class="results-count" id="resultsCount"></div>
 
-<div class="grid" id="grid"></div>
+<!-- Plan View -->
+<div id="planView">
+  <div class="weeks-grid" id="weeksGrid"></div>
+</div>
 
-<footer>
-  Prices are approximate and may vary. Always check the official website for the latest info. 🌏
-</footer>
+<!-- All Activities View -->
+<div id="allView" style="display:none;">
+  <div class="controls">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="🔍 Search activities..." oninput="renderList()" />
+    </div>
+    <div class="filter-group" id="categoryFilters"></div>
+    <div class="filter-group" id="budgetFilters"></div>
+  </div>
+  <div class="results-count" id="resultsCount"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- Family Setup Modal -->
+<div class="modal-overlay" id="setupModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>👨‍👩‍👧‍👦 Set Up Your Family</h3>
+      <button class="modal-close" onclick="closeSetup()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="setup-intro">Tell us about your family so we can suggest the best activities for your kids!</p>
+      <div class="form-group">
+        <label class="form-label">Family Name</label>
+        <input class="form-input" id="familyNameInput" placeholder="e.g. The Smiths" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kids</label>
+        <div class="kids-list" id="kidsList"></div>
+        <button class="add-kid-btn" onclick="addKidRow()">+ Add another child</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="save-btn" onclick="saveFamily()">Save & Continue 🎉</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pick Week Modal (from All Activities "Add to Plan") -->
+<div class="modal-overlay" id="weekPickModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📅 Add to which week?</h3>
+      <button class="modal-close" onclick="closeModal('weekPickModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="week-pick-grid" id="weekPickGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Activity Picker Modal (Add to week from planner) -->
+<div class="modal-overlay" id="activityPickModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>➕ Choose an Activity</h3>
+      <button class="modal-close" onclick="closeModal('activityPickModal')">✕</button>
+    </div>
+    <div class="modal-body" id="activityPickList"></div>
+  </div>
+</div>
+
+<footer>Prices are approximate. Always check official websites for the latest info. 🌏</footer>
 
 <script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
 const activities = [
-  {
-    name: "KidZania Bangkok",
-    emoji: "🏙️",
-    location: "Siam Paragon, Bangkok",
-    category: "Indoor",
-    ageRange: "3–14 yrs",
-    budget: "high",
-    priceRange: "฿800–฿1,000 / child",
-    description: "A mini city where kids role-play as doctors, pilots, firefighters, and more. Highly interactive and educational.",
-    mapUrl: "https://maps.google.com/?q=KidZania+Bangkok+Siam+Paragon"
-  },
-  {
-    name: "SEA LIFE Bangkok Ocean World",
-    emoji: "🦈",
-    location: "Siam Paragon, Bangkok",
-    category: "Indoor",
-    ageRange: "All ages",
-    budget: "mid",
-    priceRange: "฿490–฿690 / child",
-    description: "Largest aquarium in Southeast Asia with over 30,000 marine creatures, a shark walk, and glass-bottom boat rides.",
-    mapUrl: "https://maps.google.com/?q=SEA+LIFE+Bangkok+Ocean+World"
-  },
-  {
-    name: "Safari World Bangkok",
-    emoji: "🦁",
-    location: "Min Buri, Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "mid",
-    priceRange: "฿500–฿900 / person",
-    description: "Drive through enclosures with lions, giraffes, zebras, and more — or visit the marine park with dolphin & bird shows.",
-    mapUrl: "https://maps.google.com/?q=Safari+World+Bangkok"
-  },
-  {
-    name: "Dream World",
-    emoji: "🎢",
-    location: "Pathum Thani, near Bangkok",
-    category: "Outdoor",
-    ageRange: "4+ yrs",
-    budget: "mid",
-    priceRange: "฿350–฿500 / person",
-    description: "A fun theme park with roller coasters, a snow town, fantasy land, and adventure land. Great for a full-day out.",
-    mapUrl: "https://maps.google.com/?q=Dream+World+Thailand"
-  },
-  {
-    name: "Siam Park City",
-    emoji: "🌊",
-    location: "Khan Na Yao, Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "mid",
-    priceRange: "฿400–฿650 / person",
-    description: "One of the largest water parks in Asia with wave pools, lazy rivers, and thrilling water slides for all ages.",
-    mapUrl: "https://maps.google.com/?q=Siam+Park+City+Bangkok"
-  },
-  {
-    name: "Children's Discovery Museum",
-    emoji: "🔬",
-    location: "Chatuchak, Bangkok",
-    category: "Indoor",
-    ageRange: "2–12 yrs",
-    budget: "free",
-    priceRange: "Free entry",
-    description: "Hands-on science and discovery exhibits designed for young children. Free and very educational — a hidden gem.",
-    mapUrl: "https://maps.google.com/?q=Children%27s+Discovery+Museum+Bangkok"
-  },
-  {
-    name: "Art in Paradise Bangkok",
-    emoji: "🎨",
-    location: "Ratchadaphisek, Bangkok",
-    category: "Indoor",
-    ageRange: "All ages",
-    budget: "low",
-    priceRange: "฿200–฿400 / person",
-    description: "3D illusion art museum where you become part of the art! Perfect for family photos and interactive fun.",
-    mapUrl: "https://maps.google.com/?q=Art+in+Paradise+Bangkok"
-  },
-  {
-    name: "Bounce Thailand",
-    emoji: "🏃",
-    location: "Ekkamai, Bangkok",
-    category: "Indoor",
-    ageRange: "3+ yrs",
-    budget: "low",
-    priceRange: "฿250–฿450 / hour",
-    description: "Massive indoor trampoline park with foam pits, dodgeball courts, slam dunk zones, and ninja courses.",
-    mapUrl: "https://maps.google.com/?q=Bounce+Bangkok+Ekkamai"
-  },
-  {
-    name: "Bangkok Butterfly Garden & Insectarium",
-    emoji: "🦋",
-    location: "Chatuchak Park, Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "free",
-    priceRange: "Free entry",
-    description: "A serene garden where kids can walk among hundreds of free-flying butterflies and learn about insects.",
-    mapUrl: "https://maps.google.com/?q=Bangkok+Butterfly+Garden+Insectarium"
-  },
-  {
-    name: "Muang Boran (Ancient City)",
-    emoji: "🏛️",
-    location: "Samut Prakan, near Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "low",
-    priceRange: "฿300–฿500 / person",
-    description: "The world's largest outdoor museum with miniature replicas of Thailand's most famous temples and monuments.",
-    mapUrl: "https://maps.google.com/?q=Muang+Boran+Ancient+City+Samut+Prakan"
-  },
-  {
-    name: "Dusit Zoo",
-    emoji: "🐘",
-    location: "Dusit, Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "low",
-    priceRange: "฿100–฿150 / person",
-    description: "Classic Bangkok zoo with elephants, hippos, giraffes, and a children's zoo area. Shaded and kid-friendly.",
-    mapUrl: "https://maps.google.com/?q=Dusit+Zoo+Bangkok"
-  },
-  {
-    name: "Central World Ice Skating",
-    emoji: "⛸️",
-    location: "Ratchaprasong, Bangkok",
-    category: "Indoor",
-    ageRange: "4+ yrs",
-    budget: "low",
-    priceRange: "฿200–฿350 / session",
-    description: "Air-conditioned indoor ice rink in the heart of Bangkok. Includes skate rental. Great cool-down activity.",
-    mapUrl: "https://maps.google.com/?q=ZEN+Ice+Skating+CentralWorld+Bangkok"
-  },
-  {
-    name: "Labyrinth at Siam Discovery",
-    emoji: "🧩",
-    location: "Siam Discovery, Bangkok",
-    category: "Indoor",
-    ageRange: "5+ yrs",
-    budget: "mid",
-    priceRange: "฿450–฿550 / person",
-    description: "Immersive puzzle rooms and escape experiences designed for families. Creative and teamwork-oriented.",
-    mapUrl: "https://maps.google.com/?q=Siam+Discovery+Bangkok"
-  },
-  {
-    name: "Airplane Graveyard",
-    emoji: "✈️",
-    location: "Ramkhamhaeng, Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "free",
-    priceRange: "Free (small tip welcomed)",
-    description: "Explore old decommissioned planes in a quirky outdoor setting. Unique photo spot loved by curious kids.",
-    mapUrl: "https://maps.google.com/?q=Bangkok+Airplane+Graveyard+Ramkhamhaeng"
-  },
-  {
-    name: "Kidzooona (ICONSIAM)",
-    emoji: "🎠",
-    location: "ICONSIAM, Bangkok",
-    category: "Indoor",
-    ageRange: "1–10 yrs",
-    budget: "low",
-    priceRange: "฿150–฿350 / session",
-    description: "Indoor play zone with soft play areas, rides, and activities for toddlers and young children inside ICONSIAM mall.",
-    mapUrl: "https://maps.google.com/?q=Kidzooona+ICONSIAM+Bangkok"
-  },
-  {
-    name: "Avani+ Riverside Bangkok Pool",
-    emoji: "🏊",
-    location: "Thon Buri, Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "high",
-    priceRange: "฿800–฿1,200 / person (day pass)",
-    description: "Rooftop infinity pool with views of the Chao Phraya River. Some hotel pools offer day pass access for families.",
-    mapUrl: "https://maps.google.com/?q=Avani+Riverside+Bangkok+Hotel"
-  },
-  {
-    name: "Chatuchak Weekend Market",
-    emoji: "🛍️",
-    location: "Chatuchak, Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "free",
-    priceRange: "Free entry (spend as you go)",
-    description: "Massive weekend market with a kids section, animals, food, and endless stalls to explore as a family.",
-    mapUrl: "https://maps.google.com/?q=Chatuchak+Weekend+Market+Bangkok"
-  },
-  {
-    name: "Samphran Elephant Ground & Zoo",
-    emoji: "🐊",
-    location: "Nakhon Pathom, near Bangkok",
-    category: "Outdoor",
-    ageRange: "All ages",
-    budget: "low",
-    priceRange: "฿200–฿450 / person",
-    description: "See elephant shows, crocodile wrestling, and wildlife up close. About 40 minutes from central Bangkok.",
-    mapUrl: "https://maps.google.com/?q=Samphran+Elephant+Ground+Zoo"
+  { name:"KidZania Bangkok", emoji:"🏙️", location:"Siam Paragon, Bangkok", category:"Indoor", ageRange:"3–14 yrs", minAge:3, budget:"high", priceRange:"฿800–฿1,000 / child", budgetMin:1600, budgetMax:2000, description:"A mini city where kids role-play as doctors, pilots, and firefighters. Highly interactive and educational.", mapUrl:"https://maps.google.com/?q=KidZania+Bangkok+Siam+Paragon" },
+  { name:"SEA LIFE Bangkok Ocean World", emoji:"🦈", location:"Siam Paragon, Bangkok", category:"Indoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿490–฿690 / adult, ฿390 / child", budgetMin:1370, budgetMax:1770, description:"Largest aquarium in Southeast Asia with 30,000+ marine creatures, a shark walk, and glass-bottom boat rides.", mapUrl:"https://maps.google.com/?q=SEA+LIFE+Bangkok+Ocean+World" },
+  { name:"Safari World Bangkok", emoji:"🦁", location:"Min Buri, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿500–฿900 / person", budgetMin:1000, budgetMax:1800, description:"Drive through enclosures with lions, giraffes, and zebras. Marine park dolphin and bird shows for all ages.", mapUrl:"https://maps.google.com/?q=Safari+World+Bangkok" },
+  { name:"Dream World", emoji:"🎢", location:"Pathum Thani, near Bangkok", category:"Outdoor", ageRange:"4+ yrs", minAge:4, budget:"mid", priceRange:"฿350–฿500 / person", budgetMin:700, budgetMax:1000, description:"Theme park with roller coasters, a snow town, fantasy land, and adventure land. Great for a full-day trip.", mapUrl:"https://maps.google.com/?q=Dream+World+Thailand" },
+  { name:"Siam Park City", emoji:"🌊", location:"Khan Na Yao, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"mid", priceRange:"฿400–฿650 / person", budgetMin:800, budgetMax:1300, description:"One of Asia's largest water parks with wave pools, lazy rivers, and a toddler splash zone.", mapUrl:"https://maps.google.com/?q=Siam+Park+City+Bangkok" },
+  { name:"Children's Discovery Museum", emoji:"🔬", location:"Chatuchak, Bangkok", category:"Indoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Hands-on science and discovery exhibits designed for young children. Free and educational — a hidden gem.", mapUrl:"https://maps.google.com/?q=Children%27s+Discovery+Museum+Bangkok" },
+  { name:"Art in Paradise Bangkok", emoji:"🎨", location:"Ratchadaphisek, Bangkok", category:"Indoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿200–฿400 / person", budgetMin:400, budgetMax:800, description:"3D illusion art museum where you become part of the art! Perfect for creative family photos and fun.", mapUrl:"https://maps.google.com/?q=Art+in+Paradise+Bangkok" },
+  { name:"Bounce Thailand", emoji:"🏃", location:"Ekkamai, Bangkok", category:"Indoor", ageRange:"3+ yrs", minAge:3, budget:"low", priceRange:"฿250–฿450 / hour", budgetMin:500, budgetMax:900, description:"Massive indoor trampoline park with foam pits, dodgeball courts, slam dunk zones, and ninja courses.", mapUrl:"https://maps.google.com/?q=Bounce+Bangkok+Ekkamai" },
+  { name:"Bangkok Butterfly Garden", emoji:"🦋", location:"Chatuchak Park, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry", budgetMin:0, budgetMax:0, description:"Walk among hundreds of free-flying butterflies. Kids are captivated by the colours and gentle creatures.", mapUrl:"https://maps.google.com/?q=Bangkok+Butterfly+Garden+Insectarium" },
+  { name:"Muang Boran (Ancient City)", emoji:"🏛️", location:"Samut Prakan, near Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿300–฿500 / person", budgetMin:600, budgetMax:1000, description:"The world's largest outdoor museum. Spacious, stroller-friendly grounds with miniature Thai monuments.", mapUrl:"https://maps.google.com/?q=Muang+Boran+Ancient+City+Samut+Prakan" },
+  { name:"Dusit Zoo", emoji:"🐘", location:"Dusit, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿100–฿150 / person", budgetMin:200, budgetMax:300, description:"Classic Bangkok zoo. Shaded paths, stroller-friendly, with elephants, hippos, and a children's area.", mapUrl:"https://maps.google.com/?q=Dusit+Zoo+Bangkok" },
+  { name:"Central World Ice Skating", emoji:"⛸️", location:"Ratchaprasong, Bangkok", category:"Indoor", ageRange:"4+ yrs", minAge:4, budget:"low", priceRange:"฿200–฿350 / session", budgetMin:400, budgetMax:700, description:"Air-conditioned indoor ice rink in the heart of Bangkok. Includes skate rental — a great cool-down activity.", mapUrl:"https://maps.google.com/?q=ZEN+Ice+Skating+CentralWorld+Bangkok" },
+  { name:"Kidzooona (ICONSIAM)", emoji:"🎠", location:"ICONSIAM, Bangkok", category:"Indoor", ageRange:"1–10 yrs", minAge:1, budget:"low", priceRange:"฿150–฿350 / session", budgetMin:300, budgetMax:700, description:"Indoor play zone with soft play, rides, and activities. Designed for ages 1–10 — ideal for toddlers and babies.", mapUrl:"https://maps.google.com/?q=Kidzooona+ICONSIAM+Bangkok" },
+  { name:"Airplane Graveyard", emoji:"✈️", location:"Ramkhamhaeng, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free (small tip welcomed)", budgetMin:0, budgetMax:100, description:"Explore old decommissioned planes in a quirky outdoor setting. A unique and memorable family outing.", mapUrl:"https://maps.google.com/?q=Bangkok+Airplane+Graveyard+Ramkhamhaeng" },
+  { name:"Chatuchak Weekend Market", emoji:"🛍️", location:"Chatuchak, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"free", priceRange:"Free entry (spend as you go)", budgetMin:0, budgetMax:500, description:"Massive weekend market with a kids section, animals, and great street food. A classic Bangkok family Saturday.", mapUrl:"https://maps.google.com/?q=Chatuchak+Weekend+Market+Bangkok" },
+  { name:"Samphran Elephant Ground", emoji:"🐊", location:"Nakhon Pathom, near Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"low", priceRange:"฿200–฿450 / person", budgetMin:400, budgetMax:900, description:"Elephant shows, crocodile wrestling, and wildlife close up. About 40 mins from Bangkok — worth the drive!", mapUrl:"https://maps.google.com/?q=Samphran+Elephant+Ground+Zoo" },
+  { name:"Labyrinth at Siam Discovery", emoji:"🧩", location:"Siam Discovery, Bangkok", category:"Indoor", ageRange:"5+ yrs", minAge:5, budget:"mid", priceRange:"฿450–฿550 / person", budgetMin:900, budgetMax:1100, description:"Immersive puzzle rooms and escape experiences. Creative and teamwork-oriented — better for older kids.", mapUrl:"https://maps.google.com/?q=Siam+Discovery+Bangkok" },
+  { name:"Avani+ Riverside Pool Day", emoji:"🏊", location:"Thon Buri, Bangkok", category:"Outdoor", ageRange:"All ages", minAge:0, budget:"high", priceRange:"฿800–฿1,200 / person (day pass)", budgetMin:1600, budgetMax:2400, description:"Rooftop infinity pool with stunning Chao Phraya River views. A splurge treat for the whole family.", mapUrl:"https://maps.google.com/?q=Avani+Riverside+Bangkok+Hotel" }
+];
+
+const activityMap = Object.fromEntries(activities.map(a => [a.name, a]));
+
+// ─────────────────────────────────────────────
+// STATE (persisted in localStorage)
+// ─────────────────────────────────────────────
+function loadState() {
+  try {
+    return {
+      family: JSON.parse(localStorage.getItem('bkk_family') || 'null'),
+      plan: JSON.parse(localStorage.getItem('bkk_plan') || 'null')
+    };
+  } catch { return { family: null, plan: null }; }
+}
+
+function saveState() {
+  localStorage.setItem('bkk_family', JSON.stringify(state.family));
+  localStorage.setItem('bkk_plan', JSON.stringify(state.plan));
+}
+
+const loaded = loadState();
+const state = {
+  family: loaded.family || { name: '', kids: [] },
+  plan: loaded.plan || { 0: [], 1: [], 2: [], 3: [] },
+  currentTab: 'plan',
+  pendingActivityForWeek: null, // activity name waiting for week selection
+};
+
+// ─────────────────────────────────────────────
+// FAMILY HELPERS
+// ─────────────────────────────────────────────
+function minFamilyAge() {
+  if (!state.family.kids.length) return 99;
+  return Math.min(...state.family.kids.map(k => parseFloat(k.age) || 0));
+}
+
+function isFamilyFriendly(a) {
+  return a.minAge <= minFamilyAge();
+}
+
+// ─────────────────────────────────────────────
+// HEADER
+// ─────────────────────────────────────────────
+function renderHeader() {
+  const { family } = state;
+  const sub = document.getElementById('headerSub');
+  const badges = document.getElementById('familyBadges');
+
+  if (family.name) {
+    sub.textContent = `Personalised for ${family.name}`;
+    badges.innerHTML = family.kids.map(k =>
+      `<span class="family-badge">${k.age <= 1 ? '👶' : '🧒'} ${k.name} (${k.age} yr${k.age != 1 ? 's' : ''})</span>`
+    ).join('') + '<span class="family-badge">📍 Bangkok & Nearby</span>';
+  } else {
+    sub.textContent = 'Find fun things to do with your kids in Bangkok!';
+    badges.innerHTML = '';
   }
-];
+}
 
-const categories = ["All", ...new Set(activities.map(a => a.category))];
+// ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+function renderDashboard() {
+  const allPlanActivities = Object.values(state.plan).flat();
+  const resolved = allPlanActivities.map(n => activityMap[n]).filter(Boolean);
+  const totalMin = resolved.reduce((s, a) => s + a.budgetMin, 0);
+  const totalMax = resolved.reduce((s, a) => s + a.budgetMax, 0);
+  const freeCount = resolved.filter(a => a.budget === 'free').length;
+  const totalCount = resolved.length;
+
+  document.getElementById('dashboard').innerHTML = `
+    <div class="dash-card">
+      <div class="dash-label">Activities This Month</div>
+      <div class="dash-value">${totalCount}</div>
+      <div class="dash-sub">across 4 weeks</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Budget Min</div>
+      <div class="dash-value">฿${totalMin.toLocaleString()}</div>
+      <div class="dash-sub">best case total</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Budget Max</div>
+      <div class="dash-value">฿${totalMax.toLocaleString()}</div>
+      <div class="dash-sub">worst case total</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Free Activities</div>
+      <div class="dash-value">${freeCount}</div>
+      <div class="dash-sub">in your plan</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Avg per Outing</div>
+      <div class="dash-value">${totalCount ? '฿' + Math.round((totalMin + totalMax) / 2 / totalCount).toLocaleString() : '—'}</div>
+      <div class="dash-sub">estimated</div>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────────
+function switchTab(tab) {
+  state.currentTab = tab;
+  document.getElementById('planView').style.display = tab === 'plan' ? '' : 'none';
+  document.getElementById('allView').style.display = tab === 'all' ? '' : 'none';
+  document.getElementById('tabPlan').classList.toggle('active', tab === 'plan');
+  document.getElementById('tabAll').classList.toggle('active', tab === 'all');
+}
+
+// ─────────────────────────────────────────────
+// PLANNER
+// ─────────────────────────────────────────────
+const WEEK_LABELS = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+
+function renderPlanner() {
+  const grid = document.getElementById('weeksGrid');
+  grid.innerHTML = '';
+
+  [0,1,2,3].forEach(w => {
+    const weekActivities = (state.plan[w] || []).map(n => activityMap[n]).filter(Boolean);
+    const cardsHtml = weekActivities.length
+      ? weekActivities.map(a => `
+          <div class="plan-card">
+            <button class="remove-btn" onclick="removeFromPlan(${w},'${a.name.replace(/'/g,"\\'")}')">✕</button>
+            <div class="plan-card-top">
+              <div class="plan-card-emoji">${a.emoji}</div>
+              <div class="plan-card-info">
+                <div class="plan-card-name">${a.name}</div>
+                <div class="plan-card-loc">📍 ${a.location}</div>
+                <div class="plan-card-price">${a.priceRange}</div>
+              </div>
+            </div>
+            <div class="plan-card-actions">
+              <a class="plan-map-btn" href="${a.mapUrl}" target="_blank" rel="noopener">🗺️ Map</a>
+            </div>
+          </div>`).join('')
+      : '<div class="week-empty">No activities yet<br>tap + to add one</div>';
+
+    grid.innerHTML += `
+      <div class="week-col">
+        <div class="week-header">${WEEK_LABELS[w]}</div>
+        <div class="week-activities">${cardsHtml}</div>
+        <button class="add-activity-btn" onclick="openActivityPicker(${w})">+ Add Activity</button>
+      </div>`;
+  });
+}
+
+function removeFromPlan(weekIndex, activityName) {
+  state.plan[weekIndex] = state.plan[weekIndex].filter(n => n !== activityName);
+  saveState();
+  renderPlanner();
+  renderDashboard();
+}
+
+// ─────────────────────────────────────────────
+// ACTIVITY PICKER (from planner + button)
+// ─────────────────────────────────────────────
+let pickingForWeek = null;
+
+function openActivityPicker(weekIndex) {
+  pickingForWeek = weekIndex;
+  const alreadyInWeek = new Set(state.plan[weekIndex] || []);
+  const options = activities.filter(a => !alreadyInWeek.has(a.name));
+
+  const list = document.getElementById('activityPickList');
+  list.innerHTML = options.map(a => {
+    const suitable = isFamilyFriendly(a);
+    return `
+      <div class="modal-item" onclick="addActivityToWeek('${a.name.replace(/'/g,"\\'")}')">
+        <div class="modal-item-emoji">${a.emoji}</div>
+        <div class="modal-item-info">
+          <div class="modal-item-name">${a.name} ${suitable ? '✅' : '⚠️ older kids'}</div>
+          <div class="modal-item-meta">📍 ${a.location} · ${a.ageRange}</div>
+        </div>
+        <div class="modal-item-price">${a.priceRange}</div>
+      </div>`;
+  }).join('');
+
+  openModal('activityPickModal');
+}
+
+function addActivityToWeek(activityName) {
+  if (pickingForWeek === null) return;
+  if (!state.plan[pickingForWeek]) state.plan[pickingForWeek] = [];
+  if (!state.plan[pickingForWeek].includes(activityName)) {
+    state.plan[pickingForWeek].push(activityName);
+    saveState();
+    renderPlanner();
+    renderDashboard();
+  }
+  closeModal('activityPickModal');
+}
+
+// ─────────────────────────────────────────────
+// "ADD TO PLAN" from All Activities tab
+// ─────────────────────────────────────────────
+function openWeekPicker(activityName) {
+  state.pendingActivityForWeek = activityName;
+  const grid = document.getElementById('weekPickGrid');
+  grid.innerHTML = WEEK_LABELS.map((label, i) => {
+    const count = (state.plan[i] || []).length;
+    return `<button class="week-pick-btn" onclick="addPendingToWeek(${i})">
+      ${label}<br><span style="font-size:0.75rem;color:#94a3b8;font-weight:400">${count} activit${count===1?'y':'ies'}</span>
+    </button>`;
+  }).join('');
+  openModal('weekPickModal');
+}
+
+function addPendingToWeek(weekIndex) {
+  const name = state.pendingActivityForWeek;
+  if (!name) return;
+  if (!state.plan[weekIndex]) state.plan[weekIndex] = [];
+  if (!state.plan[weekIndex].includes(name)) {
+    state.plan[weekIndex].push(name);
+    saveState();
+    renderPlanner();
+    renderDashboard();
+  }
+  closeModal('weekPickModal');
+  state.pendingActivityForWeek = null;
+}
+
+// ─────────────────────────────────────────────
+// ALL ACTIVITIES LIST
+// ─────────────────────────────────────────────
+const categories = ['All', ...new Set(activities.map(a => a.category))];
 const budgets = [
-  { key: "all",  label: "All Budgets" },
-  { key: "free", label: "Free" },
-  { key: "low",  label: "Budget (฿)" },
-  { key: "mid",  label: "Mid (฿฿)" },
-  { key: "high", label: "Splurge (฿฿฿)" },
+  { key:'all', label:'All Budgets' },
+  { key:'free', label:'Free' },
+  { key:'low', label:'Budget (฿)' },
+  { key:'mid', label:'Mid (฿฿)' },
+  { key:'high', label:'Splurge (฿฿฿)' },
 ];
+let activeCategory = 'All', activeBudget = 'all';
 
-let activeCategory = "All";
-let activeBudget = "all";
-
-function budgetClass(b) {
-  return { free: "budget-free", low: "budget-low", mid: "budget-mid", high: "budget-high" }[b];
-}
-function budgetLabel(b) {
-  return { free: "Free", low: "Budget ฿", mid: "Mid ฿฿", high: "Splurge ฿฿฿" }[b];
-}
+function budgetClass(b) { return {free:'budget-free',low:'budget-low',mid:'budget-mid',high:'budget-high'}[b]; }
+function budgetLabel(b) { return {free:'Free',low:'Budget ฿',mid:'Mid ฿฿',high:'Splurge ฿฿฿'}[b]; }
 
 function buildFilters() {
-  const catEl = document.getElementById("categoryFilters");
-  catEl.innerHTML = "";
+  const catEl = document.getElementById('categoryFilters');
+  catEl.innerHTML = '';
   categories.forEach(c => {
-    const btn = document.createElement("button");
-    btn.className = "filter-btn" + (c === activeCategory ? " active" : "");
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (c === activeCategory ? ' active' : '');
     btn.textContent = c;
-    btn.onclick = () => { activeCategory = c; buildFilters(); render(); };
+    btn.onclick = () => { activeCategory = c; buildFilters(); renderList(); };
     catEl.appendChild(btn);
   });
-
-  const budEl = document.getElementById("budgetFilters");
-  budEl.innerHTML = "";
+  const budEl = document.getElementById('budgetFilters');
+  budEl.innerHTML = '';
   budgets.forEach(b => {
-    const btn = document.createElement("button");
-    btn.className = "filter-btn" + (b.key === activeBudget ? " active" : "");
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (b.key === activeBudget ? ' active' : '');
     btn.textContent = b.label;
-    btn.onclick = () => { activeBudget = b.key; buildFilters(); render(); };
+    btn.onclick = () => { activeBudget = b.key; buildFilters(); renderList(); };
     budEl.appendChild(btn);
   });
 }
 
-function render() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
+function renderList() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
   const filtered = activities.filter(a => {
-    const matchCat = activeCategory === "All" || a.category === activeCategory;
-    const matchBudget = activeBudget === "all" || a.budget === activeBudget;
-    const matchSearch = !query ||
-      a.name.toLowerCase().includes(query) ||
-      a.description.toLowerCase().includes(query) ||
-      a.location.toLowerCase().includes(query);
+    const matchCat = activeCategory === 'All' || a.category === activeCategory;
+    const matchBudget = activeBudget === 'all' || a.budget === activeBudget;
+    const matchSearch = !query || a.name.toLowerCase().includes(query) || a.description.toLowerCase().includes(query) || a.location.toLowerCase().includes(query);
     return matchCat && matchBudget && matchSearch;
   });
 
-  document.getElementById("resultsCount").textContent =
-    `Showing ${filtered.length} of ${activities.length} activities`;
+  document.getElementById('resultsCount').textContent = `Showing ${filtered.length} of ${activities.length} activities`;
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
 
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-
-  if (filtered.length === 0) {
+  if (!filtered.length) {
     grid.innerHTML = '<div class="no-results">😔 No activities found. Try adjusting your filters.</div>';
     return;
   }
 
   filtered.forEach(a => {
+    const suitable = isFamilyFriendly(a);
     grid.innerHTML += `
       <div class="card">
         <div class="card-header">
@@ -529,23 +685,91 @@ function render() {
           <span class="tag tag-category">${a.category}</span>
           <span class="tag tag-age">👶 ${a.ageRange}</span>
           <span class="budget-tag ${budgetClass(a.budget)}">${budgetLabel(a.budget)}</span>
+          ${suitable && state.family.kids.length ? '<span class="tag tag-family">✅ Family pick</span>' : ''}
         </div>
         <div class="card-desc">${a.description}</div>
         <div class="card-footer">
-          <div class="price-range">
-            ${a.priceRange}
-            <span>Approx. entry price</span>
+          <div class="price-range">${a.priceRange}<span>Approx. entry</span></div>
+          <div class="card-btns">
+            <button class="add-to-plan-btn" onclick="openWeekPicker('${a.name.replace(/'/g,"\\'")}')">+ Plan</button>
+            <a class="map-btn" href="${a.mapUrl}" target="_blank" rel="noopener">🗺️ Map</a>
           </div>
-          <a class="map-btn" href="${a.mapUrl}" target="_blank" rel="noopener">
-            🗺️ View Map
-          </a>
         </div>
       </div>`;
   });
 }
 
-buildFilters();
-render();
+// ─────────────────────────────────────────────
+// FAMILY SETUP MODAL
+// ─────────────────────────────────────────────
+function openSetup() {
+  document.getElementById('familyNameInput').value = state.family.name || '';
+  const list = document.getElementById('kidsList');
+  list.innerHTML = '';
+  (state.family.kids.length ? state.family.kids : [{ name: '', age: '' }]).forEach(k => addKidRow(k));
+  openModal('setupModal');
+}
+
+function closeSetup() {
+  if (!state.family.name && !state.family.kids.length) return; // don't allow close without setup
+  closeModal('setupModal');
+}
+
+function addKidRow(kid = { name: '', age: '' }) {
+  const list = document.getElementById('kidsList');
+  const div = document.createElement('div');
+  div.className = 'kid-row';
+  div.innerHTML = `
+    <input class="form-input" placeholder="Child's name" value="${kid.name}" />
+    <input class="form-input age-input" type="number" placeholder="Age (yrs)" min="0" max="18" step="0.5" value="${kid.age}" />
+    <button class="remove-kid-btn" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(div);
+}
+
+function saveFamily() {
+  const name = document.getElementById('familyNameInput').value.trim();
+  if (!name) { alert('Please enter your family name!'); return; }
+  const rows = document.querySelectorAll('#kidsList .kid-row');
+  const kids = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const kName = inputs[0].value.trim();
+    const kAge = parseFloat(inputs[1].value);
+    if (kName && !isNaN(kAge)) kids.push({ name: kName, age: kAge });
+  });
+  state.family = { name, kids };
+  saveState();
+  closeModal('setupModal');
+  renderAll();
+}
+
+// ─────────────────────────────────────────────
+// MODAL HELPERS
+// ─────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el && el.id !== 'setupModal') closeModal(el.id); });
+});
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function renderAll() {
+  renderHeader();
+  renderDashboard();
+  renderPlanner();
+  buildFilters();
+  renderList();
+}
+
+renderAll();
+
+// Show setup on first visit
+if (!state.family.name) {
+  setTimeout(() => openSetup(), 300);
+}
 </script>
 </body>
 </html>
